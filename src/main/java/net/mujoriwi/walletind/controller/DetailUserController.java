@@ -1,5 +1,7 @@
 package net.mujoriwi.walletind.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,7 +25,7 @@ public class DetailUserController {
     private ResponseData<Object> responseData;
 
     @PostMapping("/detail-user/{id}")
-    public ResponseEntity<Object> postDetailUser(@PathVariable long id , @RequestBody DetailUserDto request) throws Exception {
+    public ResponseEntity<Object> postDetailUser(@PathVariable long id , @Valid @RequestBody DetailUserDto request ) throws Exception {
         responseData = detailUserService.addDetailUser(id, request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
 

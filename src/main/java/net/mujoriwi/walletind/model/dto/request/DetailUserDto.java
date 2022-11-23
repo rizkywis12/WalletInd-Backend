@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DetailUserDto {
     @NotBlank(message = "first name is required")
-    @Pattern(regexp = "^[a-zA-Z]{3,}$", message = "input minimal 3 characters and only accepts a-z, A-Z")
+    @Pattern(regexp = "^[a-zA-Z]{3,}$", message = "input minimum 3 characters and only accepts a-z, A-Z")
     private String firstName;
-    
+
     private String lastName;
 
     @NotBlank(message = "Phone NUmber is required")
