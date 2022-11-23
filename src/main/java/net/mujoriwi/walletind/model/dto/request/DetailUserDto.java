@@ -18,8 +18,9 @@ public class DetailUserDto {
 
     private String lastName;
 
-    @NotBlank(message = "Phone NUmber is required")
+    @NotBlank(message = "Phone Number is required")
     @Size(min = 10, max = 15, message = "phone number must between 10 - 15 characters")
-    @Pattern(regexp = "^[0-9]", message = "phone number must be number")
+    @Pattern(regexp = "^\\d{10,15}$", message = "phone number must be number")
     private String phoneNumber;
 }
+
