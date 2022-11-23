@@ -28,7 +28,6 @@ public class DetailUserServiceImpl implements DetailUserService {
     @Autowired
     private UserRepository userRepository;
 
-    
 
     private ResponseData<Object> responseData;
     private User user;
@@ -38,7 +37,7 @@ public class DetailUserServiceImpl implements DetailUserService {
     @Autowired
     private DetailUserValidator DetailUserValidator;
 
-    @Autowired 
+    @Autowired
     private DetailUserRepository detailUserRepository;
 
     private DetailUser detailUser;
@@ -54,9 +53,9 @@ public class DetailUserServiceImpl implements DetailUserService {
     }
 
     @Override
-    public ResponseData<Object> addDetailUser(Long id , DetailUserDto request) throws Exception {
+    public ResponseData<Object> addDetailUser(Long id, DetailUserDto request) throws Exception {
         Optional<User> userOpt = userRepository.findById(id);
-        
+
         userValidator.validateUserNotFound(userOpt);
         user = userOpt.get();
         Optional<DetailUser> detailUserOpt = detailUserRepository.findByUserId(user);
@@ -68,13 +67,28 @@ public class DetailUserServiceImpl implements DetailUserService {
         // TODO Auto-generated method stub
         responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Succes add information", data);
 
-        return responseData; 
+        return responseData;
     }
 
     @Override
-    public ResponseData<Object> updateDetailUser(Long id, DetailUserDto request) {
-        // TODO Auto-generated method stub
-        return null;
+    public ResponseData<Object> updateDetailUser(Long id, DetailUserDto request) throws Exception {
+        Optional<User> userOpt = userRepository.findById(id);
+        userValidator.validateUserNotFound(userOpt);
+        user = userOpt.get();
+        Optional<DetailUser> detailUserOptional = detailUserRepository.findByUserId(user);
+        if (detailUserOptional.isPresent()) {
+            detailUser = detailUserOptional.get();
+            detailUser.setFirstName(request.getFirstName());
+            detailUser.setLastName(request.getLastName());
+            detailUser.setPhoneNumber(request.getPhoneNumber());
+            detailUser.setUserId(user);
+            detailUserRepository.save(detailUser);
+            DetailuserInformation();
+            responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Your Data Has Been Updated!!", data);
+        }else {
+            DetailUserValidator.validateDetailNotFound(detailUserOptional);
+        }
+        return responseData;
     }
-    
 }
+

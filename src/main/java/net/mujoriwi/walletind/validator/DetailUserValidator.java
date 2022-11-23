@@ -14,4 +14,10 @@ public class DetailUserValidator {
             throw new CustomNotFoundException("Biodata already exist, kindly check");
         }
     }
+    public void validateDetailNotFound(Optional<DetailUser> detailUserOpt) throws Exception {
+        if (detailUserOpt.isEmpty()) {
+            throw new CustomNotFoundException("Biodata Not Found, Please Add Bio First!");
+        }
+    }
+
 }
