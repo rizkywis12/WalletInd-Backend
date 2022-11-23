@@ -16,7 +16,7 @@ import net.mujoriwi.walletind.model.dto.response.ResponseData;
 import net.mujoriwi.walletind.service.service.UserService;
 
 @RestController
-@RequestMapping
+@RequestMapping("/users")
 @CrossOrigin(value = "http://localhost:3000")
 public class UserController {
     @Autowired
