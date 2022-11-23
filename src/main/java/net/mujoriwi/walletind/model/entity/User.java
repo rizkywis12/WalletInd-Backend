@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 public class User {
@@ -24,6 +24,9 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    @Column(unique = true, nullable = false)
+    private String userName;
 
     public User(String email, String password) {
         this.email = email;

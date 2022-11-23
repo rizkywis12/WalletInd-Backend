@@ -16,9 +16,15 @@ public class UserValidator {
         }
     }
 
-    public void validateUserFound(Optional<User> userOpt) throws Exception {
-        if (userOpt.isPresent()) {
-            throw new CustomNotFoundException("User is found. Please login!");
+    public void validateEmailExist(Optional<User> emailOpt) throws Exception {
+        if (emailOpt.isPresent()) {
+            throw new CustomNotFoundException("Email already exist. Please login!");
+        }
+    }
+
+    public void validateUserNameExist(Optional<User> userNameOpt) throws Exception {
+        if (userNameOpt.isPresent()) {
+            throw new CustomNotFoundException("Username already exist. Please login!");
         }
     }
 

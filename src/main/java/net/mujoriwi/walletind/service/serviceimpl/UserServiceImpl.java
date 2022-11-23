@@ -1,5 +1,7 @@
 package net.mujoriwi.walletind.service.serviceimpl;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -29,16 +31,29 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserValidator userValidator;
 
+    private Map<Object, Object> data;
+
+    void userInformation() {
+        data = new HashMap<>();
+        data.put("email", user.getEmail());
+        data.put("username", user.getUserName());
+    }
+
     @Override
     public ResponseData<Object> register(RegisterDto request) throws Exception {
-        Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
+        Optional<User> emailOpt = userRepository.findByEmail(request.getEmail());
+        userValidator.validateEmailExist(emailOpt);
 
-        userValidator.validateUserFound(userOpt);
+        Optional<User> userNameOpt = userRepository.findByUserName(request.getUserName());
+        userValidator.validateUserNameExist(userNameOpt);
 
         user = new User(request.getEmail(), request.getPassword());
+        user.setUserName(request.getUserName());
         userRepository.save(user);
 
-        responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Success register!", user.getEmail());
+        userInformation();
+
+        responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Success register!", data);
 
         return responseData;
     }
@@ -53,7 +68,9 @@ public class UserServiceImpl implements UserService {
 
         userValidator.validatePassword(request.getPassword(), user.getPassword());
 
-        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Success Login", user.getEmail());
+        userInformation();
+
+        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Success Login", data);
 
         return responseData;
     }
