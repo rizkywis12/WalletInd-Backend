@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class Pin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

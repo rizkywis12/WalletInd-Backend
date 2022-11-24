@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface PinRepository extends JpaRepository<Pin, Long> {
-    Optional<Pin> findByUserId(String pin);
+    Optional<Pin> findByPin(String pin);
 }

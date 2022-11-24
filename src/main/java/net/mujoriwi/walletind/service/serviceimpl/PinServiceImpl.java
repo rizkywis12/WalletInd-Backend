@@ -37,7 +37,7 @@ public class PinServiceImpl implements PinService {
 
     @Override
     public ResponseData<Object> pin(PinDto request) throws Exception {
-        Optional<Pin> pinOpt = pinRepository.findByUserId(request.getPin());
+        Optional<Pin> pinOpt = pinRepository.findByPin(request.getPin());
 
         pin = new Pin(request.getPin());
         pin.setPin(request.getPin());

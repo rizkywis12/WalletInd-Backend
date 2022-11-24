@@ -12,18 +12,15 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping
+@RequestMapping("/users")
 @CrossOrigin(value = "http://localhost:3000")
 public class PinController {
 
     @Autowired
     private PinService pinService;
-
-
     private ResponseData<Object> responseData;
-
     @PostMapping("/pin")
-    public ResponseEntity<Object> register(@RequestBody @Valid PinDto request) throws Exception {
+    public ResponseEntity<Object> pin (@RequestBody @Valid PinDto request) throws Exception {
         responseData = pinService.pin(request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
