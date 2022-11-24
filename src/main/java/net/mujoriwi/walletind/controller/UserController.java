@@ -26,6 +26,7 @@ public class UserController {
 
     private ResponseData<Object> responseData;
 
+
     @PostMapping("/register")
     public ResponseEntity<Object> register(@RequestBody @Valid RegisterDto request) throws Exception {
         responseData = userService.register(request);
