@@ -83,6 +83,8 @@ public class TransactionServiceImpl implements TransactionService {
         sender = senderIdOpt.get();
         receiver = receiverIdOpt.get();
 
+        transactionValidator.validateSenderAndReceiver(sender, receiver);
+
         transactionValidator.validateMinimumAmount(request.getAmount());
 
         transaction = new Transaction(request.getAmount(), request.getNotes(), sender, receiver);
