@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class RegisterDto {
 
     @NotBlank(message = "Email is required")
-    @Pattern(regexp = "^([\\w-\\.]+){1,64}@([\\w&&[^_]]+){2,255}.[a-z]{2,}$", message = "Please input correct email format! Ex: example@domain.com")
+    @Pattern(regexp = "^([\\w-\\.]+){1,64}@([\\w&&[^_]]+){2,255}.[a-z]{2,}$", message = "please input correct email format! ex: example@domain.com")
     private String email;
 
     @NotBlank(message = "Password is required")
@@ -22,6 +22,6 @@ public class RegisterDto {
     private String password;
 
     @NotBlank(message = "User name is required")
-    @Pattern(regexp = "^[a-zA-Z0-9._-]{3,}$", message = "input minimal 3 characters and only accepts a-z, A-Z, 0-9, ., - and _")
+    @Pattern(regexp = "^[a-zA-Z0-9._-]{3,}$", message = "input min *3 characters and use  a-z, A-Z, 0-9, ., - and _")
     private String userName;
 }
