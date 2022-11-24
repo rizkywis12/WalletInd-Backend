@@ -19,9 +19,11 @@ public class TopUp {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false)
-    private long virtualAccount;
-
     @Column(length = 50, nullable = false)
     private String paymentName;
+
+    public TopUp(String paymentName) {
+        this.paymentName = paymentName;
+    }
+    
 }

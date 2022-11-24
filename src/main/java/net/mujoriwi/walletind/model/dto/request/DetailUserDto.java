@@ -13,13 +13,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DetailUserDto {
     @NotBlank(message = "first name is required")
-    @Pattern(regexp = "^[a-zA-Z]{3,}$", message = "input minimal 3 characters and only accepts a-z, A-Z")
+    @Pattern(regexp = "^[a-zA-Z]{3,}$", message = "input minimum 3 characters and only accepts a-z, A-Z")
     private String firstName;
-    
+
     private String lastName;
 
-    @NotBlank(message = "Phone NUmber is required")
+    @NotBlank(message = "Phone Number is required")
     @Size(min = 10, max = 15, message = "phone number must between 10 - 15 characters")
-    @Pattern(regexp = "^[0-9]", message = "phone number must be number")
+    @Pattern(regexp = "^\\d{10,15}$", message = "phone number must be number")
     private String phoneNumber;
 }
+
