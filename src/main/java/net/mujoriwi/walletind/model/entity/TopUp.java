@@ -21,4 +21,9 @@ public class TopUp {
 
     @Column(length = 50, nullable = false)
     private String paymentName;
+
+    public TopUp(String paymentName) {
+        this.paymentName = paymentName;
+    }
+    
 }

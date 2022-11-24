@@ -54,4 +54,11 @@ public class Transaction {
         this.senderId = senderId;
         this.receiverId = receiverId;
     }
+
+    public Transaction(long amount, String notes, User receiverId, TopUp topUpId) {
+        this.amount = amount;
+        this.notes = notes;
+        this.topUpId = topUpId;
+        this.receiverId = receiverId;
+    }
 }

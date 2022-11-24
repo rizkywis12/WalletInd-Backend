@@ -15,19 +15,24 @@ import net.mujoriwi.walletind.repository.UserRepository;
 import net.mujoriwi.walletind.service.service.DetailUserService;
 import net.mujoriwi.walletind.validator.DetailUserValidator;
 import net.mujoriwi.walletind.validator.UserValidator;
+
 @Service
 @Transactional
 public class DetailUserServiceImpl implements DetailUserService {
     @Autowired
-    private UserRepository userRepository;
-    private ResponseData<Object> responseData;
-    private User user;
-    @Autowired
-    private UserValidator userValidator;
-    @Autowired
     private DetailUserValidator DetailUserValidator;
     @Autowired
     private DetailUserRepository detailUserRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private UserValidator userValidator;
+    
+    private ResponseData<Object> responseData;
+    private User user;
+  
+
+   
     private DetailUser detailUser;
     private Map<Object, Object> data;
     void DetailuserInformation() {
@@ -56,6 +61,7 @@ public class DetailUserServiceImpl implements DetailUserService {
         userValidator.validateUserNotFound(userOpt);
         user = userOpt.get();
         Optional<DetailUser> detailUserOptional = detailUserRepository.findByUserId(user);
+
         DetailUserValidator.validateDetailNotFound(detailUserOptional);
         detailUser = detailUserOptional.get();
         detailUser.setFirstName(request.getFirstName());
@@ -65,7 +71,7 @@ public class DetailUserServiceImpl implements DetailUserService {
         detailUserRepository.save(detailUser);
         DetailuserInformation();
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Your Data Has Been Updated!!", data);
+
         return responseData;
     }
 }
-

@@ -20,15 +20,16 @@ public class DetailUserController {
     private ResponseData<Object> responseData;
 
 
-    @PostMapping("/add/{id}")
-    public ResponseEntity<Object> postDetailUser(@PathVariable long id , @Valid @RequestBody DetailUserDto request ) throws Exception {
-
+    @PostMapping("/detail/{id}")
+    public ResponseEntity<Object> postDetailUser(@PathVariable long id, @RequestBody DetailUserDto request)
+            throws Exception {
         responseData = detailUserService.addDetailUser(id, request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
 
     }
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Object> updateDetailUser(@PathVariable long id , @RequestBody DetailUserDto request) throws Exception {
+
+    @PutMapping("/detail/update/{id}")
+    public ResponseEntity<Object> updateDetailUser(@PathVariable long id, @RequestBody DetailUserDto request)throws Exception {
         responseData = detailUserService.updateDetailUser(id, request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
 

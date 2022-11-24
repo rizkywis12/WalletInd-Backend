@@ -28,6 +28,9 @@ public class User {
     @Column(unique = true, nullable = false)
     private String userName;
 
+    @Column(nullable = false)
+    private long balance = 100000;
+
     public User(String email, String password) {
         this.email = email;
         this.password = password;
