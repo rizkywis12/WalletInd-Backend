@@ -1,7 +1,7 @@
 package net.mujoriwi.walletind.model.dto.request;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 public class LoginDto {
-    @Email(message = "Must be email format")
     @NotBlank(message = "Email is required")
+    @Pattern(regexp = "^([\\w-\\.]+){1,64}@([\\w&&[^_]]+){2,255}.[a-z]{2,}$", message = "Please input correct email format! Ex: example@domain.com")
     private String email;
 
     @NotBlank(message = "Password is required")

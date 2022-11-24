@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import net.mujoriwi.walletind.model.dto.request.ForgotPasswordDto;
 import net.mujoriwi.walletind.model.dto.request.LoginDto;
 import net.mujoriwi.walletind.model.dto.request.RegisterDto;
 import net.mujoriwi.walletind.model.dto.response.ResponseData;
@@ -71,6 +72,27 @@ public class UserServiceImpl implements UserService {
         userInformation();
 
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Success Login", data);
+
+        return responseData;
+    }
+
+    @Override
+    public ResponseData<Object> forgotPassword(ForgotPasswordDto request) throws Exception {
+        Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
+
+        userValidator.validateUserNotFound(userOpt);
+
+        user = userOpt.get();
+
+        userValidator.validateForgotPassword(user.getPassword(), request.getPassword());
+
+        userValidator.validateConfirmPassword(request.getPassword(), request.getConfirmPassword());
+
+        user.setPassword(request.getPassword());
+
+        userInformation();
+
+        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Successfully update your password!", data);
 
         return responseData;
     }
