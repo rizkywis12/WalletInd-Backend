@@ -59,28 +59,35 @@ public class TransactionServiceImpl implements TransactionService {
     private TopUpValidator topUpValidator;
 
     private Map<Object, Object> data;
+    private Map<Object, Object> listData;
 
     private List<Transaction> transactions;
-    List<Map<Object, Object>> maps;
+
+    private List<Object> transactions2;
+    private long sumIncome;
+    private long sumExpense;
 
     void transactionInformation() {
         data = new HashMap<>();
+        data.put("id", transaction.getId());
         if (transaction.getSenderId() == null) {
-            data.put("Top Up From", transaction.getTopUpId().getPaymentName());
+            data.put("topUpFrom", transaction.getTopUpId().getPaymentName());
         } else {
-            data.put("Sender", transaction.getSenderId().getUserName());
+            data.put("sender", transaction.getSenderId().getUserName());
         }
 
-        data.put("Receiver", transaction.getReceiverId().getUserName());
+        data.put("receiver", transaction.getReceiverId().getUserName());
 
         if (transaction.getSenderId() != null) {
-            data.put("Sender Balance", transaction.getSenderId().getBalance());
+            data.put("senderBalance", transaction.getSenderId().getBalance());
         }
 
-        data.put("Receiver Balance", transaction.getReceiverId().getBalance());
-        data.put("Status", transaction.getStatus());
-        data.put("Transaction Type", transaction.getTransactionType());
-        data.put("Timestamp", transaction.getTransactionCreated());
+        data.put("receiverBalance", transaction.getReceiverId().getBalance());
+        data.put("amount", transaction.getAmount());
+        // data.put("Status", transaction.getStatus());
+        data.put("transactiontype", transaction.getTransactionType());
+        data.put("transactionCategory", transaction.getTransactionCategory());
+        data.put("timestamp", transaction.getTransactionCreated());
     }
 
     @Override
@@ -98,8 +105,10 @@ public class TransactionServiceImpl implements TransactionService {
 
         transactionValidator.validateMinimumAmount(request.getAmount());
 
+        // expense sender
         transaction = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
                 LocalDateTime.now(), false);
+        // income receiver
         transaction2 = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
                 LocalDateTime.now(), true);
 
@@ -159,24 +168,79 @@ public class TransactionServiceImpl implements TransactionService {
 
         // Show Transaction Category (true = incomes, false = expenses, null = all
         // transaction history)
+
         if (transactionCategory == null) {
-            transactions = transactionRepository.findAllBySenderIdOrReceiverId(user, user);
+            sumExpense = 0;
+            sumIncome = 0;
+
+            // Expenses
+            transactions = transactionRepository.findAllByTransactionCategoryAndSenderId(false,
+                    user);
+
+            listData = new HashMap<>();
+            transactions2 = new ArrayList<>();
+
+            for (int i = 0; i < transactions.size(); i++) {
+                transaction = transactions.get(i);
+                sumExpense += transaction.getAmount();
+                transactionInformation();
+                transactions2.add(data);
+            }
+
+            // Income
+            transactions = transactionRepository.findAllByTransactionCategoryAndReceiverId(true,
+                    user);
+
+            for (int i = 0; i < transactions.size(); i++) {
+                transaction = transactions.get(i);
+                sumIncome += transaction.getAmount();
+                transactionInformation();
+                transactions2.add(data);
+            }
+
+            listData.put("history", transactions2);
+            listData.put("sumIncome", sumIncome);
+            listData.put("sumExpense", sumExpense);
+
         } else if (transactionCategory == false) {
-            transactions = transactionRepository.findAllByTransactionCategoryAndSenderId(transactionCategory, user);
+            sumExpense = 0;
+            transactions = transactionRepository.findAllByTransactionCategoryAndSenderId(transactionCategory,
+                    user);
+            listData = new HashMap<>();
+            transactions2 = new ArrayList<>();
+
+            for (int i = 0; i < transactions.size(); i++) {
+                transaction = transactions.get(i);
+                sumExpense += transaction.getAmount();
+                transactionInformation();
+                transactions2.add(data);
+                listData.put("History", transactions2);
+            }
+
+            listData.put("Expense", sumExpense);
+
         } else if (transactionCategory == true) {
-            transactions = transactionRepository.findAllByTransactionCategoryAndReceiverId(transactionCategory, user);
+            sumIncome = 0;
+            transactions = transactionRepository.findAllByTransactionCategoryAndReceiverId(transactionCategory,
+                    user);
+
+            listData = new HashMap<>();
+            transactions2 = new ArrayList<>();
+
+            for (int i = 0; i < transactions.size(); i++) {
+                transaction = transactions.get(i);
+                sumIncome += transaction.getAmount();
+                transactionInformation();
+                transactions2.add(data);
+                listData.put("History", transactions2);
+            }
+
+            listData.put("Income", sumIncome);
         }
 
         transactionValidator.validateNoTransactions(transactions);
 
-        maps = new ArrayList<Map<Object, Object>>();
-        for (int i = 0; i < transactions.size(); i++) {
-            transaction = transactions.get(i);
-            transactionInformation();
-            maps.add(data);
-        }
-
-        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Success", maps);
+        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Success", listData);
         return responseData;
     }
 
