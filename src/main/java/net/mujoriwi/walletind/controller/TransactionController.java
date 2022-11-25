@@ -41,7 +41,8 @@ public class TransactionController {
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 
-    // Find transfer income or transfer expense or all transfer by current user
+    // Find transaction income/expenses or all transaction by user (notification and
+    // transaction history)
     @GetMapping("/transfer/{userId}")
     public ResponseEntity<Object> transfer(@PathVariable long userId,
             @RequestParam(value = "category", defaultValue = "") Boolean category) throws Exception {

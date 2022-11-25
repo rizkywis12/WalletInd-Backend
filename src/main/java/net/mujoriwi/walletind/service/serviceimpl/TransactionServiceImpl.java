@@ -45,6 +45,7 @@ public class TransactionServiceImpl implements TransactionService {
     private TopUp topUp;
 
     private Transaction transaction;
+    private Transaction transaction2;
 
     private ResponseData<Object> responseData;
 
@@ -82,16 +83,6 @@ public class TransactionServiceImpl implements TransactionService {
         data.put("Timestamp", transaction.getTransactionCreated());
     }
 
-    void topUpInformation() {
-        data = new HashMap<>();
-        data.put("Top Up From", transaction.getTopUpId().getPaymentName());
-        data.put("Receiver", transaction.getReceiverId().getUserName());
-        data.put("Receiver Balance", transaction.getReceiverId().getBalance());
-        data.put("Status", transaction.getStatus());
-        data.put("Transaction Type", transaction.getTransactionType());
-        data.put("Timestamp", transaction.getTransactionCreated());
-    }
-
     @Override
     public ResponseData<Object> addTransfer(Long senderId, Long receiverId, TransferDto request) throws Exception {
         Optional<User> senderIdOpt = userRepository.findById(senderId);
@@ -107,19 +98,20 @@ public class TransactionServiceImpl implements TransactionService {
 
         transactionValidator.validateMinimumAmount(request.getAmount());
 
-        transaction = new Transaction(request.getAmount(), request.getNotes(), sender, receiver);
-        transaction.setTransactionType("Transfer");
+        transaction = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
+                LocalDateTime.now(), false);
+        transaction2 = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
+                LocalDateTime.now(), true);
 
         transactionValidator.validateBalanceEnough(request.getAmount(), sender.getBalance());
 
         sender.setBalance(sender.getBalance() - request.getAmount());
         receiver.setBalance(receiver.getBalance() + request.getAmount());
 
-        transaction.setTransactionCreated(LocalDateTime.now());
-        transaction.setStatus(true);
         userRepository.save(sender);
         userRepository.save(receiver);
         transactionRepository.save(transaction);
+        transactionRepository.save(transaction2);
 
         transactionInformation();
 
@@ -146,6 +138,7 @@ public class TransactionServiceImpl implements TransactionService {
         receiver.setBalance(receiver.getBalance() + request.getAmount());
         transaction.setTransactionCreated(LocalDateTime.now());
         transaction.setStatus(true);
+        transaction.setTransactionCategory(true);
 
         userRepository.save(receiver);
         transactionRepository.save(transaction);
@@ -164,41 +157,26 @@ public class TransactionServiceImpl implements TransactionService {
 
         user = userIdOpt.get();
 
-        // Set Transaction Category to expenses
-        transactions = transactionRepository.findAllBySenderId(user);
-        maps = new ArrayList<Map<Object, Object>>();
-        for (int i = 0; i < transactions.size(); i++) {
-            transaction = transactions.get(i);
-            transaction.setTransactionCategory(false);
-            transactionRepository.save(transaction);
-        }
-
-        // Set Transaction Category to incomes
-        transactions = transactionRepository.findAllByReceiverId(user);
-        maps = new ArrayList<Map<Object, Object>>();
-        for (int i = 0; i < transactions.size(); i++) {
-            transaction = transactions.get(i);
-            transaction.setTransactionCategory(true);
-            transactionRepository.save(transaction);
-        }
-
         // Show Transaction Category (true = incomes, false = expenses, null = all
         // transaction history)
         if (transactionCategory == null) {
-            transactions = transactionRepository.findAll();
-        } else {
-            transactions = transactionRepository.findAllByTransactionCategory(transactionCategory);
-
-            maps = new ArrayList<Map<Object, Object>>();
-            for (int i = 0; i < transactions.size(); i++) {
-                transaction = transactions.get(i);
-                transactionInformation();
-                maps.add(data);
-            }
-
+            transactions = transactionRepository.findAllBySenderIdOrReceiverId(user, user);
+        } else if (transactionCategory == false) {
+            transactions = transactionRepository.findAllByTransactionCategoryAndSenderId(transactionCategory, user);
+        } else if (transactionCategory == true) {
+            transactions = transactionRepository.findAllByTransactionCategoryAndReceiverId(transactionCategory, user);
         }
 
-        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "success", maps);
+        transactionValidator.validateNoTransactions(transactions);
+
+        maps = new ArrayList<Map<Object, Object>>();
+        for (int i = 0; i < transactions.size(); i++) {
+            transaction = transactions.get(i);
+            transactionInformation();
+            maps.add(data);
+        }
+
+        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Success", maps);
         return responseData;
     }
 

@@ -10,9 +10,10 @@ import net.mujoriwi.walletind.model.entity.User;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-    List<Transaction> findAllBySenderId(User user);
 
-    List<Transaction> findAllByReceiverId(User user);
+    List<Transaction> findAllByTransactionCategoryAndSenderId(Boolean transactionCategory, User user);
 
-    List<Transaction> findAllByTransactionCategory(Boolean transactionCategory);
+    List<Transaction> findAllByTransactionCategoryAndReceiverId(Boolean transactionCategory, User user);
+
+    List<Transaction> findAllBySenderIdOrReceiverId(User sender, User receiver);
 }
