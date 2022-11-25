@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.mujoriwi.walletind.model.dto.request.TopUpDto;
 import net.mujoriwi.walletind.model.dto.request.TransferDto;
 import net.mujoriwi.walletind.model.dto.response.ResponseData;
 import net.mujoriwi.walletind.service.service.TransactionService;
@@ -36,16 +35,17 @@ public class TransactionController {
     }
 
     @PostMapping("/topup/{topUpId}/{receiverId}")
-    public ResponseEntity<Object> topUp(@PathVariable long topUpId ,@PathVariable long receiverId, @RequestBody @Valid TransferDto request) throws Exception {
-        responseData = transactionService.addTopUp(topUpId ,receiverId, request);
+    public ResponseEntity<Object> topUp(@PathVariable long topUpId, @PathVariable long receiverId,
+            @RequestBody @Valid TransferDto request) throws Exception {
+        responseData = transactionService.addTopUp(topUpId, receiverId, request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 
     // Find transfer income or transfer expense or all transfer by current user
     @GetMapping("/transfer/{userId}")
     public ResponseEntity<Object> transfer(@PathVariable long userId,
-            @RequestParam(value = "status", defaultValue = "") Boolean status) throws Exception {
-        responseData = transactionService.getTransferCategory(userId, status);
+            @RequestParam(value = "category", defaultValue = "") Boolean category) throws Exception {
+        responseData = transactionService.getTransferCategory(userId, category);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 

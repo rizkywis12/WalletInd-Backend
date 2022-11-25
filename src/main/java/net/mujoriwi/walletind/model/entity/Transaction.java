@@ -28,6 +28,8 @@ public class Transaction {
 
     private Boolean status;
 
+    private Boolean transactionCategory;
+
     private String transactionType;
 
     private LocalDateTime transactionCreated;

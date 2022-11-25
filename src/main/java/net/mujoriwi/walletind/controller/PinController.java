@@ -1,8 +1,6 @@
 package net.mujoriwi.walletind.controller;
 
-
 import net.mujoriwi.walletind.model.dto.request.PinDto;
-import net.mujoriwi.walletind.model.dto.request.RegisterDto;
 import net.mujoriwi.walletind.model.dto.response.ResponseData;
 import net.mujoriwi.walletind.service.service.PinService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +17,10 @@ public class PinController {
     @Autowired
     private PinService pinService;
     private ResponseData<Object> responseData;
+
     @PostMapping("/pin/{id}")
-    public ResponseEntity<Object> pin (@PathVariable long id,@RequestBody @Valid PinDto request) throws Exception {
-        responseData = pinService.pin(id,request);
+    public ResponseEntity<Object> pin(@PathVariable long id, @RequestBody @Valid PinDto request) throws Exception {
+        responseData = pinService.pin(id, request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 }
