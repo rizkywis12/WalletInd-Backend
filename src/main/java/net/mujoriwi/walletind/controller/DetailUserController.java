@@ -9,7 +9,7 @@ import net.mujoriwi.walletind.model.dto.response.ResponseData;
 import net.mujoriwi.walletind.service.service.DetailUserService;
 
 @RestController
-@RequestMapping("/detail-users")
+@RequestMapping("/users")
 @CrossOrigin(value = "http://localhost:3000")
 public class DetailUserController {
     @Autowired
@@ -31,5 +31,11 @@ public class DetailUserController {
         responseData = detailUserService.updateDetailUser(id, request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
 
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getById(@PathVariable long id) throws Exception {
+        responseData = detailUserService.getDetailUserById(id);
+        return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 }

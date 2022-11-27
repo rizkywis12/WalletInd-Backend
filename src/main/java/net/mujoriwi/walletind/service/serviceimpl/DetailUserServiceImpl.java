@@ -37,6 +37,7 @@ public class DetailUserServiceImpl implements DetailUserService {
     private Map<Object, Object> data;
     void DetailuserInformation() {
         data = new HashMap<>();
+        data.put("Email", user.getEmail());
         data.put("First Name", detailUser.getFirstName());
         data.put("Last Name", detailUser.getLastName());
         data.put("Phone Number", detailUser.getPhoneNumber());
@@ -72,6 +73,19 @@ public class DetailUserServiceImpl implements DetailUserService {
         DetailuserInformation();
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Your Data Has Been Updated!!", data);
 
+        return responseData;
+    }
+    @Override
+    public ResponseData<Object> getDetailUserById(Long id) throws Exception {
+        // TODO Auto-generated method stub
+        Optional<DetailUser> detailUserOpt = detailUserRepository.findById(id);
+        Optional<User> userOpt = userRepository.findById(id);
+        userValidator.validateUserNotFound(userOpt);
+        user = userOpt.get();
+        detailUser =  detailUserOpt.get();
+        DetailUserValidator.validateDetailNotFound(detailUserOpt);
+        DetailuserInformation();
+        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "success", data);
         return responseData;
     }
 }
