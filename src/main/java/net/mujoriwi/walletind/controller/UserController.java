@@ -2,14 +2,10 @@ package net.mujoriwi.walletind.controller;
 
 import javax.validation.Valid;
 
+import net.mujoriwi.walletind.model.dto.request.ChangePasswordDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import net.mujoriwi.walletind.model.dto.request.ForgotPasswordDto;
 import net.mujoriwi.walletind.model.dto.request.LoginDto;
@@ -43,4 +39,17 @@ public class UserController {
         responseData = userService.forgotPassword(request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
+
+    @PutMapping("/change-password/{id}")
+    public ResponseEntity<Object> changePassword(@PathVariable long id, @RequestBody @Valid ChangePasswordDto request) throws Exception {
+        responseData = userService.changePassword(id, request);
+        return ResponseEntity.status(responseData.getStatus()).body(responseData);
+    }
+
+    @GetMapping("/getall")
+    public ResponseEntity<Object> getAllUser() {
+        responseData = userService.getAll();
+        return ResponseEntity.status(responseData.getStatus()).body(responseData);
+    }
+
 }

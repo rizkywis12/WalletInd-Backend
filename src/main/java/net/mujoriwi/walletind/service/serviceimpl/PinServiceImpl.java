@@ -47,7 +47,7 @@ public class PinServiceImpl implements PinService {
 
 
     @Override
-    public ResponseData<Object> pin(long id, PinDto request) throws Exception {
+    public ResponseData<Object> addpin(long id, PinDto request) throws Exception {
         Optional<User> userOpt = userRepository.findById(id);
 
         userValidator.validateUserNotFound(userOpt);

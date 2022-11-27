@@ -1,11 +1,12 @@
 package net.mujoriwi.walletind.service.serviceimpl;
-
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import net.mujoriwi.walletind.model.dto.request.ChangePasswordDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class UserServiceImpl implements UserService {
 
     private ResponseData<Object> responseData;
     private User user;
+    private List<User> users;
 
     @Autowired
     private UserValidator userValidator;
@@ -94,6 +96,31 @@ public class UserServiceImpl implements UserService {
 
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Successfully update your password!", data);
 
+        return responseData;
+    }
+
+    @Override
+    public ResponseData<Object> changePassword(long id,ChangePasswordDto request) throws Exception {
+        Optional<User> userOpt = userRepository.findById(id);
+        userValidator.validateUserNotFound(userOpt);
+        user = userOpt.get();
+        userValidator.validateCurrentPassword(user.getPassword(), request.getCurrentPassword());
+        userValidator.validateConfirmPassword(request.getNewPassword(), request.getNewConfirmPassword());
+
+        user.setPassword(request.getNewPassword());
+        userInformation();
+
+        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Successfully Change your password!", data);
+
+        return responseData;
+    }
+
+    @Override
+    public ResponseData<Object> getAll() {
+        users = userRepository.findAll();
+
+        // response data
+        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "success", users);
         return responseData;
     }
 
