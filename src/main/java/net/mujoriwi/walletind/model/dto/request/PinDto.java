@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 
 @NoArgsConstructor
@@ -12,5 +13,6 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class PinDto {
     @NotBlank(message = "Pin is required")
+    @Pattern(regexp = "^\\d{6}$", message = "Pin Must 6 Digit")
     private String pin;
 }

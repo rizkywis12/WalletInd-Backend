@@ -21,7 +21,7 @@ public class PinController {
     private ResponseData<Object> responseData;
     @PostMapping("/pin/{id}")
     public ResponseEntity<Object> pin (@PathVariable long id,@RequestBody @Valid PinDto request) throws Exception {
-        responseData = pinService.pin(id,request);
+        responseData = pinService.addpin(id,request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 }

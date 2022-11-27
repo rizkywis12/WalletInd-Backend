@@ -34,6 +34,11 @@ public class UserValidator {
             throw new CustomUnauthorizedException("Unauthorized! Password does not match!");
         }
     }
+    public void validateCurrentPassword(String passwordDB, String requestDB) throws Exception {
+        if (!passwordDB.equals(requestDB)) {
+            throw new CustomUnauthorizedException("Unauthorized! Please Input Current Password");
+        }
+    }
 
     public void validateConfirmPassword(String requestPass, String requestConfirmPass) throws Exception {
         if (!requestPass.equals(requestConfirmPass)) {
