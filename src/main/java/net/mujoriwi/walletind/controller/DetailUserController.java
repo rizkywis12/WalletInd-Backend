@@ -1,7 +1,5 @@
 package net.mujoriwi.walletind.controller;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,14 +9,13 @@ import net.mujoriwi.walletind.model.dto.response.ResponseData;
 import net.mujoriwi.walletind.service.service.DetailUserService;
 
 @RestController
-@RequestMapping("/detail-users")
+@RequestMapping("/users")
 @CrossOrigin(value = "http://localhost:3000")
 public class DetailUserController {
     @Autowired
     private DetailUserService detailUserService;
 
     private ResponseData<Object> responseData;
-
 
     @PostMapping("/detail/{id}")
     public ResponseEntity<Object> postDetailUser(@PathVariable long id, @RequestBody DetailUserDto request)
@@ -29,9 +26,16 @@ public class DetailUserController {
     }
 
     @PutMapping("/detail/update/{id}")
-    public ResponseEntity<Object> updateDetailUser(@PathVariable long id, @RequestBody DetailUserDto request)throws Exception {
+    public ResponseEntity<Object> updateDetailUser(@PathVariable long id, @RequestBody DetailUserDto request)
+            throws Exception {
         responseData = detailUserService.updateDetailUser(id, request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
 
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getById(@PathVariable long id) throws Exception {
+        responseData = detailUserService.getDetailUserById(id);
+        return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 }

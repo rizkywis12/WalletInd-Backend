@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import net.mujoriwi.walletind.model.dto.request.TopUpDto;
 import net.mujoriwi.walletind.model.dto.request.TransferDto;
 import net.mujoriwi.walletind.model.dto.response.ResponseData;
 import net.mujoriwi.walletind.model.entity.TopUp;
@@ -46,6 +45,7 @@ public class TransactionServiceImpl implements TransactionService {
     private TopUp topUp;
 
     private Transaction transaction;
+    private Transaction transaction2;
 
     private ResponseData<Object> responseData;
 
@@ -59,38 +59,35 @@ public class TransactionServiceImpl implements TransactionService {
     private TopUpValidator topUpValidator;
 
     private Map<Object, Object> data;
+    private Map<Object, Object> listData;
 
     private List<Transaction> transactions;
-    List<Map<Object, Object>> maps;
 
-    public void list() {
-        maps = new ArrayList<Map<Object, Object>>();
-        for (int i = 0; i < transactions.size(); i++) { 
-            transaction = transactions.get(i);
-            transferInformation();
-            maps.add(data);
+    private List<Object> transactions2;
+    private long sumIncome;
+    private long sumExpense;
+
+    void transactionInformation() {
+        data = new HashMap<>();
+        data.put("id", transaction.getId());
+        if (transaction.getSenderId() == null) {
+            data.put("topUpFrom", transaction.getTopUpId().getPaymentName());
+        } else {
+            data.put("sender", transaction.getSenderId().getUserName());
         }
-    }
 
-    void transferInformation() {
-        data = new HashMap<>();
-        data.put("Sender", transaction.getSenderId().getUserName());
-        data.put("Receiver", transaction.getReceiverId().getUserName());
-        data.put("Sender Balance", transaction.getSenderId().getBalance());
-        data.put("Receiver Balance", transaction.getReceiverId().getBalance());
-        data.put("Status", transaction.getStatus());
-        data.put("Transaction Type", transaction.getTransactionType());
-        data.put("Timestamp", transaction.getTransactionCreated());
-    }
+        data.put("receiver", transaction.getReceiverId().getUserName());
 
-    void topUpInformation() {
-        data = new HashMap<>();
-        data.put("Top Up From", transaction.getTopUpId().getPaymentName());
-        data.put("Receiver", transaction.getReceiverId().getUserName());
-        data.put("Receiver Balance", transaction.getReceiverId().getBalance());
-        data.put("Status", transaction.getStatus());
-        data.put("Transaction Type", transaction.getTransactionType());
-        data.put("Timestamp", transaction.getTransactionCreated());
+        if (transaction.getSenderId() != null) {
+            data.put("senderBalance", transaction.getSenderId().getBalance());
+        }
+
+        data.put("receiverBalance", transaction.getReceiverId().getBalance());
+        data.put("amount", transaction.getAmount());
+        // data.put("Status", transaction.getStatus());
+        data.put("transactiontype", transaction.getTransactionType());
+        data.put("transactionCategory", transaction.getTransactionCategory());
+        data.put("timestamp", transaction.getTransactionCreated());
     }
 
     @Override
@@ -108,21 +105,24 @@ public class TransactionServiceImpl implements TransactionService {
 
         transactionValidator.validateMinimumAmount(request.getAmount());
 
-        transaction = new Transaction(request.getAmount(), request.getNotes(), sender, receiver);
-        transaction.setTransactionType("Transfer");
+        // expense sender
+        transaction = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
+                LocalDateTime.now(), false);
+        // income receiver
+        transaction2 = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
+                LocalDateTime.now(), true);
 
         transactionValidator.validateBalanceEnough(request.getAmount(), sender.getBalance());
 
         sender.setBalance(sender.getBalance() - request.getAmount());
         receiver.setBalance(receiver.getBalance() + request.getAmount());
 
-        transaction.setTransactionCreated(LocalDateTime.now());
-        transaction.setStatus(true);
         userRepository.save(sender);
         userRepository.save(receiver);
         transactionRepository.save(transaction);
+        transactionRepository.save(transaction2);
 
-        transferInformation();
+        transactionInformation();
 
         responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Success add transfer", data);
 
@@ -130,47 +130,117 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public ResponseData<Object> addTopUp( Long topUpid , Long receiverId , TransferDto request) throws Exception {
+    public ResponseData<Object> addTopUp(Long topUpid, Long receiverId, TransferDto request) throws Exception {
         Optional<User> receiverIdOpt = userRepository.findById(receiverId);
         Optional<TopUp> topUpIdOpt = topUpRepository.findById(topUpid);
+
         topUpValidator.validateTopUpNotFound(topUpIdOpt);
+
         userValidator.validateUserNotFound(receiverIdOpt);
+
         receiver = receiverIdOpt.get();
+
         topUp = topUpIdOpt.get();
-        transaction = new Transaction(request.getAmount(), request.getNotes(),  receiver, topUp);
+
+        transaction = new Transaction(request.getAmount(), request.getNotes(), receiver, topUp);
         transaction.setTransactionType("TopUp");
         receiver.setBalance(receiver.getBalance() + request.getAmount());
         transaction.setTransactionCreated(LocalDateTime.now());
-        transaction.setStatus(false);
+        transaction.setStatus(true);
+        transaction.setTransactionCategory(true);
+
         userRepository.save(receiver);
         transactionRepository.save(transaction);
-        topUpInformation();
+
+        transactionInformation();
+
         responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Success Top Up", data);
         return responseData;
     }
 
-    // Find transfer income or transfer expense
     @Override
-    public ResponseData<Object> getTransferCategory(Long userId, Boolean status) throws Exception {
+    public ResponseData<Object> getTransferCategory(Long userId, Boolean transactionCategory) throws Exception {
         Optional<User> userIdOpt = userRepository.findById(userId);
 
         userValidator.validateUserNotFound(userIdOpt);
 
         user = userIdOpt.get();
 
-        if (status == null) {
-            transactions = transactionRepository.findAll();
-        } else if (status == true) {
-            // When current user being sender then it will be expenses
-            transactions = transactionRepository.findAllBySenderId(user);
-        } else if (status == false) {
-            // When current user being receiver then it will be incomes
-            transactions = transactionRepository.findAllByReceiverId(user);
+        // Show Transaction Category (true = incomes, false = expenses, null = all
+        // transaction history)
+
+        if (transactionCategory == null) {
+            sumExpense = 0;
+            sumIncome = 0;
+
+            // Expenses
+            transactions = transactionRepository.findAllByTransactionCategoryAndSenderId(false,
+                    user);
+
+            listData = new HashMap<>();
+            transactions2 = new ArrayList<>();
+
+            for (int i = 0; i < transactions.size(); i++) {
+                transaction = transactions.get(i);
+                sumExpense += transaction.getAmount();
+                transactionInformation();
+                transactions2.add(data);
+            }
+
+            // Income
+            transactions = transactionRepository.findAllByTransactionCategoryAndReceiverId(true,
+                    user);
+
+            for (int i = 0; i < transactions.size(); i++) {
+                transaction = transactions.get(i);
+                sumIncome += transaction.getAmount();
+                transactionInformation();
+                transactions2.add(data);
+            }
+
+            listData.put("history", transactions2);
+            listData.put("sumIncome", sumIncome);
+            listData.put("sumExpense", sumExpense);
+
+        } else if (transactionCategory == false) {
+            sumExpense = 0;
+            transactions = transactionRepository.findAllByTransactionCategoryAndSenderId(transactionCategory,
+                    user);
+            listData = new HashMap<>();
+            transactions2 = new ArrayList<>();
+
+            for (int i = 0; i < transactions.size(); i++) {
+                transaction = transactions.get(i);
+                sumExpense += transaction.getAmount();
+                transactionInformation();
+                transactions2.add(data);
+                listData.put("History", transactions2);
+            }
+
+            listData.put("Expense", sumExpense);
+
+        } else if (transactionCategory == true) {
+            sumIncome = 0;
+            transactions = transactionRepository.findAllByTransactionCategoryAndReceiverId(transactionCategory,
+                    user);
+
+            listData = new HashMap<>();
+            transactions2 = new ArrayList<>();
+
+            for (int i = 0; i < transactions.size(); i++) {
+                transaction = transactions.get(i);
+                sumIncome += transaction.getAmount();
+                transactionInformation();
+                transactions2.add(data);
+                listData.put("History", transactions2);
+            }
+
+            listData.put("Income", sumIncome);
         }
 
-        list();
+        transactionValidator.validateNoTransactions(transactions);
 
-        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "success", maps);
+        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Success", listData);
         return responseData;
     }
 
