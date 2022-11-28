@@ -74,7 +74,7 @@ public class TransactionServiceImpl implements TransactionService {
         data = new HashMap<>();
         data.put("id", transaction.getId());
         if (transaction.getSenderId() == null) {
-            data.put("topUpFrom", transaction.getTopUpId().getPaymentName());
+            data.put("sender", transaction.getTopUpId().getPaymentName());
         } else {
             data.put("sender", transaction.getSenderId().getUserName());
         }
@@ -88,7 +88,7 @@ public class TransactionServiceImpl implements TransactionService {
         data.put("receiverBalance", transaction.getReceiverId().getBalance());
         data.put("amount", transaction.getAmount());
         // data.put("Status", transaction.getStatus());
-        data.put("transactiontype", transaction.getTransactionType());
+        data.put("transactionType", transaction.getTransactionType());
         data.put("transactionCategory", transaction.getTransactionCategory());
         data.put("timestamp", transaction.getTransactionCreated());
     }
