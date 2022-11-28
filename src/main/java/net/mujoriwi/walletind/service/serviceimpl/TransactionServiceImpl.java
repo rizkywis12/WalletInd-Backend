@@ -63,8 +63,10 @@ public class TransactionServiceImpl implements TransactionService {
 
     private List<Transaction> transactions;
 
-    private List<Object> transactions2;
+    private List<Map<Object, Object>> history;
+
     private long sumIncome;
+
     private long sumExpense;
 
     void transactionInformation() {
@@ -90,6 +92,20 @@ public class TransactionServiceImpl implements TransactionService {
         data.put("timestamp", transaction.getTransactionCreated());
     }
 
+    void history() {
+        for (int i = 0; i < transactions.size(); i++) {
+            transaction = transactions.get(i);
+            transactionInformation();
+            history.add(data);
+        }
+    }
+
+    private List<Transaction> getHistory(User user, LocalDateTime start, LocalDateTime end) {
+        transactions = transactionRepository
+                .findHistory(user, start, end);
+        return transactions;
+    }
+
     @Override
     public ResponseData<Object> addTransfer(Long senderId, Long receiverId, TransferDto request) throws Exception {
         Optional<User> senderIdOpt = userRepository.findById(senderId);
@@ -107,10 +123,11 @@ public class TransactionServiceImpl implements TransactionService {
 
         // expense sender
         transaction = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
-                LocalDateTime.now(), false);
+                LocalDateTime.now().minusDays(6), false);
+
         // income receiver
         transaction2 = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
-                LocalDateTime.now(), true);
+                LocalDateTime.now().minusDays(6), true);
 
         transactionValidator.validateBalanceEnough(request.getAmount(), sender.getBalance());
 
@@ -159,88 +176,133 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public ResponseData<Object> getTransferCategory(Long userId, Boolean transactionCategory) throws Exception {
+    public ResponseData<Object> getSumIncomeOrExpense(Long userId) throws Exception {
         Optional<User> userIdOpt = userRepository.findById(userId);
 
         userValidator.validateUserNotFound(userIdOpt);
 
         user = userIdOpt.get();
 
-        // Show Transaction Category (true = incomes, false = expenses, null = all
-        // transaction history)
+        sumExpense = 0;
+        sumIncome = 0;
 
-        if (transactionCategory == null) {
-            sumExpense = 0;
-            sumIncome = 0;
+        transactions = transactionRepository.findSum(user);
 
-            // Expenses
-            transactions = transactionRepository.findAllByTransactionCategoryAndSenderId(false,
-                    user);
+        listData = new HashMap<>();
 
-            listData = new HashMap<>();
-            transactions2 = new ArrayList<>();
-
-            for (int i = 0; i < transactions.size(); i++) {
-                transaction = transactions.get(i);
+        for (int i = 0; i < transactions.size(); i++) {
+            transaction = transactions.get(i);
+            if (transaction.getTransactionCategory().equals(false)) {
                 sumExpense += transaction.getAmount();
-                transactionInformation();
-                transactions2.add(data);
-            }
-
-            // Income
-            transactions = transactionRepository.findAllByTransactionCategoryAndReceiverId(true,
-                    user);
-
-            for (int i = 0; i < transactions.size(); i++) {
-                transaction = transactions.get(i);
+            } else if (transaction.getTransactionCategory().equals(true)) {
                 sumIncome += transaction.getAmount();
-                transactionInformation();
-                transactions2.add(data);
             }
-
-            listData.put("history", transactions2);
-            listData.put("sumIncome", sumIncome);
-            listData.put("sumExpense", sumExpense);
-
-        } else if (transactionCategory == false) {
-            sumExpense = 0;
-            transactions = transactionRepository.findAllByTransactionCategoryAndSenderId(transactionCategory,
-                    user);
-            listData = new HashMap<>();
-            transactions2 = new ArrayList<>();
-
-            for (int i = 0; i < transactions.size(); i++) {
-                transaction = transactions.get(i);
-                sumExpense += transaction.getAmount();
-                transactionInformation();
-                transactions2.add(data);
-                listData.put("History", transactions2);
-            }
-
-            listData.put("Expense", sumExpense);
-
-        } else if (transactionCategory == true) {
-            sumIncome = 0;
-            transactions = transactionRepository.findAllByTransactionCategoryAndReceiverId(transactionCategory,
-                    user);
-
-            listData = new HashMap<>();
-            transactions2 = new ArrayList<>();
-
-            for (int i = 0; i < transactions.size(); i++) {
-                transaction = transactions.get(i);
-                sumIncome += transaction.getAmount();
-                transactionInformation();
-                transactions2.add(data);
-                listData.put("History", transactions2);
-            }
-
-            listData.put("Income", sumIncome);
         }
+
+        listData.put("sumIncome", sumIncome);
+        listData.put("sumExpense", sumExpense);
 
         transactionValidator.validateNoTransactions(transactions);
 
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Success", listData);
+        return responseData;
+    }
+
+    // Find history today - 7 days ago
+    @Override
+    public ResponseData<Object> getThisWeekHistory(Long userId) throws Exception {
+        Optional<User> userIdOpt = userRepository.findById(userId);
+
+        userValidator.validateUserNotFound(userIdOpt);
+
+        user = userIdOpt.get();
+
+        transactions = getHistory(user, LocalDateTime.now().minusDays(7), LocalDateTime.now());
+        System.out.println(history);
+
+        history = new ArrayList<>();
+
+        history();
+
+        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Success", history);
+        return responseData;
+    }
+
+    // Find history 7 days ago - this month
+    @Override
+    public ResponseData<Object> getThisMonthHistory(Long userId) throws Exception {
+        Optional<User> userIdOpt = userRepository.findById(userId);
+
+        userValidator.validateUserNotFound(userIdOpt);
+
+        user = userIdOpt.get();
+
+        transactions = getHistory(user, LocalDateTime.now().minusDays(37), LocalDateTime.now().minusDays(7));
+
+        history = new ArrayList<>();
+
+        history();
+
+        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Success", history);
+        return responseData;
+    }
+
+    // Find day in a week (chart)
+    @Override
+    public ResponseData<Object> getChart(Long userId) throws Exception {
+        sumExpense = 0;
+        sumIncome = 0;
+
+        Optional<User> userIdOpt = userRepository.findById(userId);
+
+        user = userIdOpt.get();
+
+        transactions = getHistory(user, LocalDateTime.now().minusDays(7), LocalDateTime.now());
+
+        listData = new HashMap<>();
+        history = new ArrayList<>();
+
+        for (int i = 0; i < transactions.size(); i++) {
+            transaction = transactions.get(i);
+
+            if (listData.isEmpty()) {
+                if (transaction.getTransactionCategory().equals(false)) {
+                    sumExpense += transaction.getAmount();
+                } else if (transaction.getTransactionCategory().equals(true)) {
+                    sumIncome += transaction.getAmount();
+                }
+                listData.put("Day",
+                        transaction.getTransactionCreated().getDayOfWeek());
+                listData.put("Income", sumIncome);
+                listData.put("Expense", sumExpense);
+                history.add(listData);
+            } else if (listData.containsValue(transaction.getTransactionCreated().getDayOfWeek())) {
+                if (transaction.getTransactionCategory().equals(false)) {
+                    sumExpense += transaction.getAmount();
+                } else if (transaction.getTransactionCategory().equals(true)) {
+                    sumIncome += transaction.getAmount();
+                }
+                listData.put("Income", sumIncome);
+                listData.put("Expense", sumExpense);
+            } else {
+                listData = new HashMap<>();
+                sumExpense = 0;
+                sumIncome = 0;
+                if (transaction.getTransactionCategory().equals(false)) {
+                    sumExpense += transaction.getAmount();
+                } else if (transaction.getTransactionCategory().equals(true)) {
+                    sumIncome += transaction.getAmount();
+                }
+                listData.put("Day",
+                        transaction.getTransactionCreated().getDayOfWeek());
+                listData.put("Income", sumIncome);
+                listData.put("Expense", sumExpense);
+                history.add(listData);
+            }
+        }
+
+        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Success", history);
+
         return responseData;
     }
 

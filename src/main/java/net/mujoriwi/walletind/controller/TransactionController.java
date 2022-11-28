@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.mujoriwi.walletind.model.dto.request.TransferDto;
@@ -44,9 +43,29 @@ public class TransactionController {
     // Find transaction income/expenses or all transaction by user (notification and
     // transaction history)
     @GetMapping("/transfer/{userId}")
-    public ResponseEntity<Object> transfer(@PathVariable long userId,
-            @RequestParam(value = "category", defaultValue = "") Boolean category) throws Exception {
-        responseData = transactionService.getTransferCategory(userId, category);
+    public ResponseEntity<Object> getSumIncomeOrExpense(@PathVariable long userId) throws Exception {
+        responseData = transactionService.getSumIncomeOrExpense(userId);
+        return ResponseEntity.status(responseData.getStatus()).body(responseData);
+    }
+
+    @GetMapping("/transfer/week/{userId}")
+    public ResponseEntity<Object> getThisWeekHistory(@PathVariable long userId)
+            throws Exception {
+        responseData = transactionService.getThisWeekHistory(userId);
+        return ResponseEntity.status(responseData.getStatus()).body(responseData);
+    }
+
+    @GetMapping("/transfer/month/{userId}")
+    public ResponseEntity<Object> getThisMonthHistory(@PathVariable long userId)
+            throws Exception {
+        responseData = transactionService.getThisMonthHistory(userId);
+        return ResponseEntity.status(responseData.getStatus()).body(responseData);
+    }
+
+    @GetMapping("/transfer/chart/{userId}")
+    public ResponseEntity<Object> getChartHistory(@PathVariable long userId)
+            throws Exception {
+        responseData = transactionService.getChart(userId);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 
