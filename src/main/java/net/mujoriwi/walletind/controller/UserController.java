@@ -1,7 +1,7 @@
 package net.mujoriwi.walletind.controller;
 
 import javax.validation.Valid;
-
+    
 import net.mujoriwi.walletind.model.dto.request.ChangePasswordDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
