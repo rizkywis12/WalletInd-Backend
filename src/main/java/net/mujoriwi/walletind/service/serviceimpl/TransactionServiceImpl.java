@@ -64,6 +64,7 @@ public class TransactionServiceImpl implements TransactionService {
     private List<Transaction> transactions;
 
     private List<Map<Object, Object>> history;
+    private List<Map<Object, Object>> sorted;
 
     private long sumIncome;
 
@@ -125,11 +126,11 @@ public class TransactionServiceImpl implements TransactionService {
 
         // expense sender
         transaction = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
-                LocalDateTime.now().minusDays(6), false);
+                LocalDateTime.now(), false);
 
         // income receiver
         transaction2 = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
-                LocalDateTime.now().minusDays(6), true);
+                LocalDateTime.now(), true);
 
         transactionValidator.validateBalanceEnough(request.getAmount(), sender.getBalance());
 
@@ -220,7 +221,6 @@ public class TransactionServiceImpl implements TransactionService {
         user = userIdOpt.get();
 
         transactions = getHistory(user, LocalDateTime.now().minusDays(7), LocalDateTime.now());
-        System.out.println(history);
 
         history = new ArrayList<>();
 
@@ -259,10 +259,15 @@ public class TransactionServiceImpl implements TransactionService {
 
         user = userIdOpt.get();
 
-        transactions = getHistory(user, LocalDateTime.now().minusDays(7), LocalDateTime.now());
+        // find income/expenses by day
+        transactions = transactionRepository.findHistoryAsc(user);
+
+        // transactions = getHistory(user, LocalDateTime.now().minusDays(7),
+        // LocalDateTime.now());
 
         listData = new HashMap<>();
         history = new ArrayList<>();
+        sorted = new ArrayList<>();
 
         for (int i = 0; i < transactions.size(); i++) {
             transaction = transactions.get(i);
@@ -303,7 +308,38 @@ public class TransactionServiceImpl implements TransactionService {
             }
         }
 
-        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Success", history);
+        List<Object> daysArrayName = new ArrayList<>() {
+            {
+                add(LocalDateTime.now().minusDays(6).getDayOfWeek());
+                add(LocalDateTime.now().minusDays(5).getDayOfWeek());
+                add(LocalDateTime.now().minusDays(4).getDayOfWeek());
+                add(LocalDateTime.now().minusDays(3).getDayOfWeek());
+                add(LocalDateTime.now().minusDays(2).getDayOfWeek());
+                add(LocalDateTime.now().minusDays(1).getDayOfWeek());
+                add(LocalDateTime.now().getDayOfWeek());
+            }
+        };
+
+        sorted = new ArrayList<>(7);
+
+        for (int i = 0; i < daysArrayName.size(); i++) {
+            listData = new HashMap<>();
+            sumExpense = 0;
+            sumIncome = 0;
+            listData.put("Day",
+                    daysArrayName.get(i));
+            listData.put("Income", sumIncome);
+            listData.put("Expense", sumExpense);
+            sorted.add(listData);
+
+            for (int j = 0; j < history.size(); j++) {
+                if (history.get(j).containsValue((daysArrayName.get(i)))) {
+                    sorted.set(i, history.get(j));
+                }
+            }
+        }
+
+        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Success", sorted);
 
         return responseData;
     }
