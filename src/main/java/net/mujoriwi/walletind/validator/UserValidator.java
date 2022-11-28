@@ -34,6 +34,7 @@ public class UserValidator {
             throw new CustomUnauthorizedException("Unauthorized! Password does not match!");
         }
     }
+
     public void validateCurrentPassword(String passwordDB, String requestDB) throws Exception {
         if (!passwordDB.equals(requestDB)) {
             throw new CustomUnauthorizedException("Unauthorized! Please Input Current Password");
@@ -51,4 +52,12 @@ public class UserValidator {
             throw new CustomBadRequestException("Your new password cannot be the same as your current password!");
         }
     }
+
+    public void validateBalance(Long balance) throws Exception {
+        if (balance == 0) {
+            throw new CustomBadRequestException(
+                    "Your balance is empty. Please top up before do transfer to others...");
+        }
+    }
+
 }

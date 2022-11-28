@@ -17,8 +17,8 @@ public class TransactionValidator {
         }
     }
 
-    public void validateBalanceEnough(Long amountRequest, Long amountSender) throws Exception {
-        if (amountRequest > amountSender - 50000) {
+    public void validateBalanceEnough(Long amountRequest, Long balanceSender) throws Exception {
+        if (amountRequest > balanceSender - 50000) {
             throw new CustomBadRequestException("Balance is not enough. Your balance must be at least 50000!");
         }
     }

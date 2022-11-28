@@ -5,7 +5,6 @@ import net.mujoriwi.walletind.model.dto.request.ForgotPasswordDto;
 import net.mujoriwi.walletind.model.dto.request.LoginDto;
 import net.mujoriwi.walletind.model.dto.request.RegisterDto;
 import net.mujoriwi.walletind.model.dto.response.ResponseData;
-import net.mujoriwi.walletind.model.entity.User;
 
 public interface UserService {
     ResponseData<Object> register(RegisterDto request) throws Exception;
@@ -14,7 +13,7 @@ public interface UserService {
 
     ResponseData<Object> forgotPassword(ForgotPasswordDto request) throws Exception;
 
-    ResponseData<Object> changePassword(long id,ChangePasswordDto request) throws Exception;
+    ResponseData<Object> changePassword(long id, ChangePasswordDto request) throws Exception;
 
     ResponseData<Object> getAll();
 
