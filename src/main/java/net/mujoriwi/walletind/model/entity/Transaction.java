@@ -34,6 +34,8 @@ public class Transaction {
 
     private LocalDateTime transactionCreated;
 
+    // private LocalDateTime transactionUpdated;
+
     @ManyToOne
     @JoinColumn(name = "sender_id")
     private User senderId;

@@ -8,8 +8,11 @@ public interface TransactionService {
 
     ResponseData<Object> addTopUp(Long topUpid, Long receiverId, TransferDto request) throws Exception;
 
-    // ResponseData<Object> getTransferCategory(Long userId, Boolean status) throws
-    // Exception;
+    ResponseData<Object> getSumIncomeOrExpense(Long userId) throws Exception;
 
-    ResponseData<Object> getTransferCategory(Long userId, Boolean transactionCategory) throws Exception;
+    ResponseData<Object> getThisWeekHistory(Long userId) throws Exception;
+
+    ResponseData<Object> getThisMonthHistory(Long userId) throws Exception;
+
+    ResponseData<Object> getChart(Long userId) throws Exception;
 }
