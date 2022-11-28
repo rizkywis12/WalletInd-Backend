@@ -1,4 +1,5 @@
 package net.mujoriwi.walletind.service.serviceimpl;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -101,7 +102,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseData<Object> changePassword(long id,ChangePasswordDto request) throws Exception {
+    public ResponseData<Object> changePassword(long id, ChangePasswordDto request) throws Exception {
         Optional<User> userOpt = userRepository.findById(id);
         userValidator.validateUserNotFound(userOpt);
         user = userOpt.get();
