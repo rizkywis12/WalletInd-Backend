@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService {
 
     void userInformation() {
         data = new HashMap<>();
+        data.put("id", user.getId());
         data.put("email", user.getEmail());
         data.put("username", user.getUserName());
     }

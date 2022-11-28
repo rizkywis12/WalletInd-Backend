@@ -29,7 +29,7 @@ public class User {
     private String userName;
 
     @Column(nullable = false)
-    private long balance = 100000;
+    private long balance = 0;
 
     public User(String email, String password) {
         this.email = email;
