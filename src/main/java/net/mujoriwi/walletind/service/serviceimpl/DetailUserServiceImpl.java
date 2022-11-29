@@ -40,7 +40,7 @@ public class DetailUserServiceImpl implements DetailUserService {
         data.put("Email", user.getEmail());
         data.put("First Name", detailUser.getFirstName());
         data.put("Last Name", detailUser.getLastName());
-        data.put("Phone Number", detailUser.getPhoneNumber());
+        data.put("PhoneNumber", detailUser.getPhoneNumber());
     }
     @Override
     public ResponseData<Object> addDetailUser(Long id, DetailUserDto request) throws Exception {
