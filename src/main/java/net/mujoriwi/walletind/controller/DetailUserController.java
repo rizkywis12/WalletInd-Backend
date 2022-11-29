@@ -35,7 +35,7 @@ public class DetailUserController {
 
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/detail/{id}")
     public ResponseEntity<Object> getById(@PathVariable long id) throws Exception {
         responseData = detailUserService.getDetailUserById(id);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
