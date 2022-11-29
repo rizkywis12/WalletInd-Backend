@@ -12,4 +12,6 @@ public interface DetailUserService {
 
     ResponseData<Object> getAllUserExceptCurrentUser(Long id) throws Exception;
 
+    ResponseData<Object> getUserInformationById(Long id) throws Exception;
+
 }

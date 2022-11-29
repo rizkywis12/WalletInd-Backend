@@ -38,7 +38,7 @@ public class DetailUserServiceImpl implements DetailUserService {
 
     private List<Map<Object, Object>> list;
 
-    private List<DetailUser> detailUsers;
+    // private List<DetailUser> detailUsers;
     private List<User> users;
 
     private Map<Object, Object> data;
@@ -101,7 +101,6 @@ public class DetailUserServiceImpl implements DetailUserService {
 
     @Override
     public ResponseData<Object> getAllUserExceptCurrentUser(Long id) throws Exception {
-        // detailUsers = detailUserRepository.findId(id);
         users = userRepository.findId(id);
 
         list = new ArrayList<>();
@@ -116,12 +115,8 @@ public class DetailUserServiceImpl implements DetailUserService {
 
             if (detailUserOpt.isPresent()) {
                 detailUser = detailUserOpt.get();
-                // data.put("Full Name", detailUser.getFirstName() + " " +
-                // detailUser.getLastName());
                 data.put("PhoneNumber", detailUser.getPhoneNumber());
             } else {
-                // data.put("Full Name", detailUser.getFirstName() + " " +
-                // detailUser.getLastName());
                 data.put("PhoneNumber", "-");
             }
 
@@ -129,6 +124,27 @@ public class DetailUserServiceImpl implements DetailUserService {
         }
 
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "success", list);
+        return responseData;
+    }
+
+    @Override
+    public ResponseData<Object> getUserInformationById(Long id) throws Exception {
+        Optional<User> userOpt = userRepository.findById(id);
+        Optional<DetailUser> detailUserOpt = detailUserRepository.findByUserId(user);
+
+        user = userOpt.get();
+
+        data = new HashMap<>();
+        data.put("Id", user.getId());
+        data.put("Username", user.getUserName());
+
+        if (detailUserOpt.isPresent()) {
+            detailUser = detailUserOpt.get();
+            data.put("PhoneNumber", detailUser.getPhoneNumber());
+        } else {
+            data.put("PhoneNumber", "-");
+        }
+        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "success", data);
         return responseData;
     }
 }
