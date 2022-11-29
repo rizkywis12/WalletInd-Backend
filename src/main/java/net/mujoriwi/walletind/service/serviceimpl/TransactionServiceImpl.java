@@ -126,11 +126,11 @@ public class TransactionServiceImpl implements TransactionService {
 
         // expense sender
         transaction = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
-                LocalDateTime.now(), false);
+                LocalDateTime.now().minusDays(20), false);
 
         // income receiver
         transaction2 = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
-                LocalDateTime.now(), true);
+                LocalDateTime.now().minusDays(20), true);
 
         transactionValidator.validateBalanceEnough(request.getAmount(), sender.getBalance());
 
@@ -191,6 +191,8 @@ public class TransactionServiceImpl implements TransactionService {
 
         transactions = transactionRepository.findSum(user);
 
+        transactionValidator.validateNoTransactions(transactions);
+
         listData = new HashMap<>();
 
         for (int i = 0; i < transactions.size(); i++) {
@@ -204,8 +206,6 @@ public class TransactionServiceImpl implements TransactionService {
 
         listData.put("sumIncome", sumIncome);
         listData.put("sumExpense", sumExpense);
-
-        transactionValidator.validateNoTransactions(transactions);
 
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Success", listData);
         return responseData;
@@ -221,6 +221,8 @@ public class TransactionServiceImpl implements TransactionService {
         user = userIdOpt.get();
 
         transactions = getHistory(user, LocalDateTime.now().minusDays(7), LocalDateTime.now());
+
+        transactionValidator.validateNoTransactions(transactions);
 
         history = new ArrayList<>();
 
@@ -241,6 +243,8 @@ public class TransactionServiceImpl implements TransactionService {
 
         transactions = getHistory(user, LocalDateTime.now().minusDays(37), LocalDateTime.now().minusDays(7));
 
+        transactionValidator.validateNoTransactions(transactions);
+
         history = new ArrayList<>();
 
         history();
@@ -252,8 +256,8 @@ public class TransactionServiceImpl implements TransactionService {
     // Find day in a week (chart)
     @Override
     public ResponseData<Object> getChart(Long userId) throws Exception {
-        sumExpense = 0;
-        sumIncome = 0;
+        long sumExpenses = 0;
+        long sumIncomes = 0;
 
         Optional<User> userIdOpt = userRepository.findById(userId);
 
@@ -262,8 +266,7 @@ public class TransactionServiceImpl implements TransactionService {
         // find income/expenses by day
         transactions = transactionRepository.findHistoryAsc(user);
 
-        // transactions = getHistory(user, LocalDateTime.now().minusDays(7),
-        // LocalDateTime.now());
+        transactionValidator.validateNoTransactions(transactions);
 
         listData = new HashMap<>();
         history = new ArrayList<>();
@@ -274,36 +277,36 @@ public class TransactionServiceImpl implements TransactionService {
 
             if (listData.isEmpty()) {
                 if (transaction.getTransactionCategory().equals(false)) {
-                    sumExpense += transaction.getAmount();
+                    sumExpenses += transaction.getAmount();
                 } else if (transaction.getTransactionCategory().equals(true)) {
-                    sumIncome += transaction.getAmount();
+                    sumIncomes += transaction.getAmount();
                 }
                 listData.put("Day",
                         transaction.getTransactionCreated().getDayOfWeek());
-                listData.put("Income", sumIncome);
-                listData.put("Expense", sumExpense);
+                listData.put("Income", sumIncomes);
+                listData.put("Expense", sumExpenses);
                 history.add(listData);
             } else if (listData.containsValue(transaction.getTransactionCreated().getDayOfWeek())) {
                 if (transaction.getTransactionCategory().equals(false)) {
-                    sumExpense += transaction.getAmount();
+                    sumExpenses += transaction.getAmount();
                 } else if (transaction.getTransactionCategory().equals(true)) {
-                    sumIncome += transaction.getAmount();
+                    sumIncomes += transaction.getAmount();
                 }
-                listData.put("Income", sumIncome);
-                listData.put("Expense", sumExpense);
+                listData.put("Income", sumIncomes);
+                listData.put("Expense", sumExpenses);
             } else {
                 listData = new HashMap<>();
-                sumExpense = 0;
-                sumIncome = 0;
+                sumExpenses = 0;
+                sumIncomes = 0;
                 if (transaction.getTransactionCategory().equals(false)) {
-                    sumExpense += transaction.getAmount();
+                    sumExpenses += transaction.getAmount();
                 } else if (transaction.getTransactionCategory().equals(true)) {
-                    sumIncome += transaction.getAmount();
+                    sumIncomes += transaction.getAmount();
                 }
                 listData.put("Day",
                         transaction.getTransactionCreated().getDayOfWeek());
-                listData.put("Income", sumIncome);
-                listData.put("Expense", sumExpense);
+                listData.put("Income", sumIncomes);
+                listData.put("Expense", sumExpenses);
                 history.add(listData);
             }
         }
@@ -324,12 +327,12 @@ public class TransactionServiceImpl implements TransactionService {
 
         for (int i = 0; i < daysArrayName.size(); i++) {
             listData = new HashMap<>();
-            sumExpense = 0;
-            sumIncome = 0;
+            sumExpenses = 0;
+            sumIncomes = 0;
             listData.put("Day",
                     daysArrayName.get(i));
-            listData.put("Income", sumIncome);
-            listData.put("Expense", sumExpense);
+            listData.put("Income", sumIncomes);
+            listData.put("Expense", sumExpenses);
             sorted.add(listData);
 
             for (int j = 0; j < history.size(); j++) {
