@@ -8,6 +8,8 @@ import net.mujoriwi.walletind.model.dto.request.DetailUserDto;
 import net.mujoriwi.walletind.model.dto.response.ResponseData;
 import net.mujoriwi.walletind.service.service.DetailUserService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/users")
 @CrossOrigin(value = "http://localhost:3000")
@@ -18,7 +20,7 @@ public class DetailUserController {
     private ResponseData<Object> responseData;
 
     @PostMapping("/detail/{id}")
-    public ResponseEntity<Object> postDetailUser(@PathVariable long id, @RequestBody DetailUserDto request)
+    public ResponseEntity<Object> postDetailUser(@PathVariable long id, @Valid @RequestBody DetailUserDto request)
             throws Exception {
         responseData = detailUserService.addDetailUser(id, request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
@@ -26,7 +28,7 @@ public class DetailUserController {
     }
 
     @PutMapping("/detail/update/{id}")
-    public ResponseEntity<Object> updateDetailUser(@PathVariable long id, @RequestBody DetailUserDto request)
+    public ResponseEntity<Object> updateDetailUser(@PathVariable long id,@Valid @RequestBody DetailUserDto request)
             throws Exception {
         responseData = detailUserService.updateDetailUser(id, request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
