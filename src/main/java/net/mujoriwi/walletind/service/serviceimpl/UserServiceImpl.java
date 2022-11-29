@@ -119,10 +119,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseData<Object> getAll() {
-        users = userRepository.findAll();
-
-        // response data
+    public ResponseData<Object> getAll(long id) {
+        users = userRepository.findId(id);
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "success", users);
         return responseData;
     }

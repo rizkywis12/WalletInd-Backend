@@ -1,7 +1,7 @@
 package net.mujoriwi.walletind.controller;
 
 import javax.validation.Valid;
-    
+
 import net.mujoriwi.walletind.model.dto.request.ChangePasswordDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,11 +41,13 @@ public class UserController {
     }
 
     @PutMapping("/change-password/{id}")
-    public ResponseEntity<Object> changePassword(@PathVariable long id, @RequestBody @Valid ChangePasswordDto request) throws Exception {
+    public ResponseEntity<Object> changePassword(@PathVariable long id, @RequestBody @Valid ChangePasswordDto request)
+            throws Exception {
         responseData = userService.changePassword(id, request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 
+<<<<<<< HEAD
     @GetMapping("/{id}")
     public ResponseEntity<Object> getById(@PathVariable long id) throws Exception {
         responseData = userService.getUserById(id);
@@ -55,6 +57,17 @@ public class UserController {
     @GetMapping("/getall")
     public ResponseEntity<Object> getAllUser() {
         responseData = userService.getAll();
+=======
+    @GetMapping("/getall/{id}")
+    public ResponseEntity<Object> getAllUser(@PathVariable long id) {
+        responseData = userService.getAll(id);
+        return ResponseEntity.status(responseData.getStatus()).body(responseData);
+    }
+
+    @GetMapping("/getbalance/{id}")
+    public ResponseEntity<Object> getBalance(@PathVariable long id) throws Exception {
+        responseData = userService.getBalance(id);
+>>>>>>> 4181846de1667d79b60981ee862fdcbc70437284
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 

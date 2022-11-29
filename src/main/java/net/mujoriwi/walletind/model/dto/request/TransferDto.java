@@ -17,4 +17,6 @@ public class TransferDto {
 
     @NotBlank(message = "Notes is required")
     private String notes;
+
+    private String pin;
 }

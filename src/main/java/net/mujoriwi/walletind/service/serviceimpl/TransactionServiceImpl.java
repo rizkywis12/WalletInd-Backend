@@ -15,9 +15,11 @@ import org.springframework.stereotype.Service;
 
 import net.mujoriwi.walletind.model.dto.request.TransferDto;
 import net.mujoriwi.walletind.model.dto.response.ResponseData;
+import net.mujoriwi.walletind.model.entity.Pin;
 import net.mujoriwi.walletind.model.entity.TopUp;
 import net.mujoriwi.walletind.model.entity.Transaction;
 import net.mujoriwi.walletind.model.entity.User;
+import net.mujoriwi.walletind.repository.PinRepository;
 import net.mujoriwi.walletind.repository.TopUpRepository;
 import net.mujoriwi.walletind.repository.TransactionRepository;
 import net.mujoriwi.walletind.repository.UserRepository;
@@ -39,9 +41,13 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private TopUpRepository topUpRepository;
 
+    @Autowired
+    private PinRepository pinRepository;
+
     private User sender;
     private User receiver;
     private User user;
+    private Pin pin;
     private TopUp topUp;
 
     private Transaction transaction;
@@ -124,15 +130,21 @@ public class TransactionServiceImpl implements TransactionService {
 
         transactionValidator.validateMinimumAmount(request.getAmount());
 
+        transactionValidator.validateBalanceEnough(request.getAmount(), sender.getBalance());
+
+        Optional<Pin> pinOpt = pinRepository.findByUserId(sender);
+
+        pin = pinOpt.get();
+
+        transactionValidator.validatePin(pin.getPin(), request.getPin());
+
         // expense sender
         transaction = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
-                LocalDateTime.now().minusDays(20), false);
+                LocalDateTime.now(), false);
 
         // income receiver
         transaction2 = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
-                LocalDateTime.now().minusDays(20), true);
-
-        transactionValidator.validateBalanceEnough(request.getAmount(), sender.getBalance());
+                LocalDateTime.now(), true);
 
         sender.setBalance(sender.getBalance() - request.getAmount());
         receiver.setBalance(receiver.getBalance() + request.getAmount());
@@ -165,7 +177,7 @@ public class TransactionServiceImpl implements TransactionService {
         transaction = new Transaction(request.getAmount(), request.getNotes(), receiver, topUp);
         transaction.setTransactionType("TopUp");
         receiver.setBalance(receiver.getBalance() + request.getAmount());
-        transaction.setTransactionCreated(LocalDateTime.now());
+        transaction.setTransactionCreated(LocalDateTime.now().minusDays(20));
         transaction.setStatus(true);
         transaction.setTransactionCategory(true);
 

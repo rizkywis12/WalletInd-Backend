@@ -1,5 +1,8 @@
 package net.mujoriwi.walletind.service.serviceimpl;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.transaction.Transactional;
@@ -27,14 +30,19 @@ public class DetailUserServiceImpl implements DetailUserService {
     private UserRepository userRepository;
     @Autowired
     private UserValidator userValidator;
-    
+
     private ResponseData<Object> responseData;
     private User user;
-  
 
-   
     private DetailUser detailUser;
+
+    private List<Map<Object, Object>> list;
+
+    // private List<DetailUser> detailUsers;
+    private List<User> users;
+
     private Map<Object, Object> data;
+
     void DetailuserInformation() {
         data = new HashMap<>();
         data.put("Email", user.getEmail());
@@ -42,6 +50,7 @@ public class DetailUserServiceImpl implements DetailUserService {
         data.put("lastName", detailUser.getLastName());
         data.put("PhoneNumber", detailUser.getPhoneNumber());
     }
+
     @Override
     public ResponseData<Object> addDetailUser(Long id, DetailUserDto request) throws Exception {
         Optional<User> userOpt = userRepository.findById(id);
@@ -56,6 +65,7 @@ public class DetailUserServiceImpl implements DetailUserService {
         responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Succes add information", data);
         return responseData;
     }
+
     @Override
     public ResponseData<Object> updateDetailUser(Long id, DetailUserDto request) throws Exception {
         Optional<User> userOpt = userRepository.findById(id);
@@ -75,16 +85,65 @@ public class DetailUserServiceImpl implements DetailUserService {
 
         return responseData;
     }
+
     @Override
     public ResponseData<Object> getDetailUserById(Long id) throws Exception {
-        // TODO Auto-generated method stub
         Optional<DetailUser> detailUserOpt = detailUserRepository.findById(id);
         Optional<User> userOpt = userRepository.findById(id);
         userValidator.validateUserNotFound(userOpt);
         user = userOpt.get();
-        detailUser =  detailUserOpt.get();
+        detailUser = detailUserOpt.get();
         DetailUserValidator.validateDetailNotFound(detailUserOpt);
         DetailuserInformation();
+        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "success", data);
+        return responseData;
+    }
+
+    @Override
+    public ResponseData<Object> getAllUserExceptCurrentUser(Long id) throws Exception {
+        users = userRepository.findId(id);
+
+        list = new ArrayList<>();
+        for (int i = 0; i < users.size(); i++) {
+            user = users.get(i);
+
+            Optional<DetailUser> detailUserOpt = detailUserRepository.findByUserId(user);
+
+            data = new HashMap<>();
+            data.put("Id", user.getId());
+            data.put("Username", user.getUserName());
+
+            if (detailUserOpt.isPresent()) {
+                detailUser = detailUserOpt.get();
+                data.put("PhoneNumber", detailUser.getPhoneNumber());
+            } else {
+                data.put("PhoneNumber", "-");
+            }
+
+            list.add(data);
+        }
+
+        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "success", list);
+        return responseData;
+    }
+
+    @Override
+    public ResponseData<Object> getUserInformationById(Long id) throws Exception {
+        Optional<User> userOpt = userRepository.findById(id);
+        Optional<DetailUser> detailUserOpt = detailUserRepository.findByUserId(user);
+
+        user = userOpt.get();
+
+        data = new HashMap<>();
+        data.put("Id", user.getId());
+        data.put("Username", user.getUserName());
+
+        if (detailUserOpt.isPresent()) {
+            detailUser = detailUserOpt.get();
+            data.put("PhoneNumber", detailUser.getPhoneNumber());
+        } else {
+            data.put("PhoneNumber", "-");
+        }
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "success", data);
         return responseData;
     }
