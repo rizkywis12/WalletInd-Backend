@@ -46,4 +46,10 @@ public class DetailUserController {
         responseData = detailUserService.getAllUserExceptCurrentUser(id);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
+
+    @GetMapping("/detail/receiver/{id}")
+    public ResponseEntity<Object> getReceiverById(@PathVariable long id) throws Exception {
+        responseData = detailUserService.getUserInformationById(id);
+        return ResponseEntity.status(responseData.getStatus()).body(responseData);
+    }
 }

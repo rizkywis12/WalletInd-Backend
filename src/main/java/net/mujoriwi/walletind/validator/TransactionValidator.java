@@ -34,4 +34,10 @@ public class TransactionValidator {
             throw new CustomNotFoundException("The user has not made any transactions!");
         }
     }
+
+    public void validatePin(String pinDB, String requestPin) throws Exception {
+        if (!pinDB.equals(requestPin)) {
+            throw new CustomNotFoundException("Wrong pin!");
+        }
+    }
 }

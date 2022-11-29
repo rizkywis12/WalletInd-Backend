@@ -20,6 +20,10 @@ import net.mujoriwi.walletind.model.dto.response.ResponseData;
 import net.mujoriwi.walletind.model.entity.Transaction;
 import net.mujoriwi.walletind.model.entity.User;
 
+
+import net.mujoriwi.walletind.model.entity.Pin;
+import net.mujoriwi.walletind.repository.PinRepository;
+
 import net.mujoriwi.walletind.repository.TransactionRepository;
 import net.mujoriwi.walletind.repository.UserRepository;
 import net.mujoriwi.walletind.service.service.TransactionService;
@@ -39,9 +43,14 @@ public class TransactionServiceImpl implements TransactionService {
 
 
 
+    @Autowired
+    private PinRepository pinRepository;
+
     private User sender;
     private User receiver;
     private User user;
+
+    private Pin pin;
 
     private Transaction transaction;
     private Transaction transaction2;
@@ -121,6 +130,14 @@ public class TransactionServiceImpl implements TransactionService {
 
         transactionValidator.validateMinimumAmount(request.getAmount());
 
+        transactionValidator.validateBalanceEnough(request.getAmount(), sender.getBalance());
+
+        Optional<Pin> pinOpt = pinRepository.findByUserId(sender);
+
+        pin = pinOpt.get();
+
+        transactionValidator.validatePin(pin.getPin(), request.getPin());
+
         // expense sender
         transaction = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
                 LocalDateTime.now(), false);
@@ -128,8 +145,6 @@ public class TransactionServiceImpl implements TransactionService {
         // income receiver
         transaction2 = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
                 LocalDateTime.now(), true);
-
-        transactionValidator.validateBalanceEnough(request.getAmount(), sender.getBalance());
 
         sender.setBalance(sender.getBalance() - request.getAmount());
         receiver.setBalance(receiver.getBalance() + request.getAmount());
