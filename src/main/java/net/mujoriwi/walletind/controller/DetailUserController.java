@@ -28,7 +28,7 @@ public class DetailUserController {
     }
 
     @PutMapping("/detail/update/{id}")
-    public ResponseEntity<Object> updateDetailUser(@PathVariable long id,@Valid @RequestBody DetailUserDto request)
+    public ResponseEntity<Object> updateDetailUser(@PathVariable long id, @Valid @RequestBody DetailUserDto request)
             throws Exception {
         responseData = detailUserService.updateDetailUser(id, request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
@@ -38,6 +38,12 @@ public class DetailUserController {
     @GetMapping("/{id}")
     public ResponseEntity<Object> getById(@PathVariable long id) throws Exception {
         responseData = detailUserService.getDetailUserById(id);
+        return ResponseEntity.status(responseData.getStatus()).body(responseData);
+    }
+
+    @GetMapping("/detail/getall/{id}")
+    public ResponseEntity<Object> getAllUser(@PathVariable long id) throws Exception {
+        responseData = detailUserService.getAllUserExceptCurrentUser(id);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 }

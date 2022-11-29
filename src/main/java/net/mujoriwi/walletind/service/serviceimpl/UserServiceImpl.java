@@ -42,6 +42,7 @@ public class UserServiceImpl implements UserService {
         data.put("id", user.getId());
         data.put("email", user.getEmail());
         data.put("username", user.getUserName());
+        data.put("balance", user.getBalance());
     }
 
     @Override
@@ -118,11 +119,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseData<Object> getAll() {
-        users = userRepository.findAll();
-
-        // response data
+    public ResponseData<Object> getAll(long id) {
+        users = userRepository.findId(id);
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "success", users);
+        return responseData;
+    }
+
+    @Override
+    public ResponseData<Object> getBalance(long id) throws Exception {
+        Optional<User> userOpt = userRepository.findById(id);
+
+        userValidator.validateUserNotFound(userOpt);
+        user = userOpt.get();
+
+        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Success!", user.getBalance());
+
         return responseData;
     }
 

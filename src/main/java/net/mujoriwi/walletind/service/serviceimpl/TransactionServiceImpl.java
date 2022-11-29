@@ -126,11 +126,11 @@ public class TransactionServiceImpl implements TransactionService {
 
         // expense sender
         transaction = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
-                LocalDateTime.now().minusDays(20), false);
+                LocalDateTime.now(), false);
 
         // income receiver
         transaction2 = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
-                LocalDateTime.now().minusDays(20), true);
+                LocalDateTime.now(), true);
 
         transactionValidator.validateBalanceEnough(request.getAmount(), sender.getBalance());
 
@@ -165,7 +165,7 @@ public class TransactionServiceImpl implements TransactionService {
         transaction = new Transaction(request.getAmount(), request.getNotes(), receiver, topUp);
         transaction.setTransactionType("TopUp");
         receiver.setBalance(receiver.getBalance() + request.getAmount());
-        transaction.setTransactionCreated(LocalDateTime.now());
+        transaction.setTransactionCreated(LocalDateTime.now().minusDays(20));
         transaction.setStatus(true);
         transaction.setTransactionCategory(true);
 
