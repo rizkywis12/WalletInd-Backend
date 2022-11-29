@@ -2,6 +2,7 @@ package net.mujoriwi.walletind.controller;
 
 import javax.validation.Valid;
 
+import net.mujoriwi.walletind.model.dto.request.TopupDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -33,10 +34,10 @@ public class TransactionController {
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 
-    @PostMapping("/topup/{topUpId}/{receiverId}")
-    public ResponseEntity<Object> topUp(@PathVariable long topUpId, @PathVariable long receiverId,
-            @RequestBody @Valid TransferDto request) throws Exception {
-        responseData = transactionService.addTopUp(topUpId, receiverId, request);
+    @PostMapping("/topup/{receiverId}")
+    public ResponseEntity<Object> topUp( @PathVariable long receiverId,
+            @RequestBody @Valid TopupDto request) throws Exception {
+        responseData = transactionService.addTopUp(receiverId, request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 
