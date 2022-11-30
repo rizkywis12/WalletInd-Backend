@@ -85,10 +85,10 @@ public class TransactionServiceImpl implements TransactionService {
 
         data.put("receiverBalance", transaction.getReceiverId().getBalance());
         data.put("amount", transaction.getAmount());
-        // data.put("Status", transaction.getStatus());
         data.put("transactionType", transaction.getTransactionType());
         data.put("transactionCategory", transaction.getTransactionCategory());
         data.put("timestamp", transaction.getTransactionCreated());
+        data.put("notes", transaction.getNotes());
     }
 
     void history() {
