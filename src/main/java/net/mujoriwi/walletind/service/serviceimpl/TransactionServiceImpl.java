@@ -1,6 +1,7 @@
 package net.mujoriwi.walletind.service.serviceimpl;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -132,13 +133,17 @@ public class TransactionServiceImpl implements TransactionService {
 
         transactionValidator.validateStatus(request.getStatus());
 
+        String str = request.getDate();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
+
         // expense sender
         transaction = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
-                LocalDateTime.now(), false);
+                dateTime, false);
 
         // income receiver
         transaction2 = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
-                LocalDateTime.now(), true);
+                dateTime, true);
 
         sender.setBalance(sender.getBalance() - request.getAmount());
         receiver.setBalance(receiver.getBalance() + request.getAmount());
