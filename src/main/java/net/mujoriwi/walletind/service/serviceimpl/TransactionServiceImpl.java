@@ -16,12 +16,10 @@ import org.springframework.stereotype.Service;
 
 import net.mujoriwi.walletind.model.dto.request.TransferDto;
 import net.mujoriwi.walletind.model.dto.response.ResponseData;
-
-
+import net.mujoriwi.walletind.model.entity.Pin;
 import net.mujoriwi.walletind.model.entity.Transaction;
 import net.mujoriwi.walletind.model.entity.User;
-
-
+import net.mujoriwi.walletind.repository.PinRepository;
 import net.mujoriwi.walletind.repository.TransactionRepository;
 import net.mujoriwi.walletind.repository.UserRepository;
 import net.mujoriwi.walletind.service.service.TransactionService;
@@ -39,15 +37,13 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private UserRepository userRepository;
 
-
-
     @Autowired
     private PinRepository pinRepository;
 
     private User sender;
     private User receiver;
     private User user;
-
+    private Pin pin;
 
     private Transaction transaction;
     private Transaction transaction2;
@@ -59,7 +55,6 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Autowired
     private UserValidator userValidator;
-
 
     private Map<Object, Object> data;
     private Map<Object, Object> listData;
@@ -282,7 +277,7 @@ public class TransactionServiceImpl implements TransactionService {
             if (listData.isEmpty()) {
                 if (transaction.getTransactionCategory().equals(false)) {
                     sumExpenses += transaction.getAmount();
-                  } else if (transaction.getTransactionCategory().equals(true)) {
+                } else if (transaction.getTransactionCategory().equals(true)) {
                     sumIncomes += transaction.getAmount();
                 }
                 listData.put("Day",
