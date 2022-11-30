@@ -130,6 +130,8 @@ public class TransactionServiceImpl implements TransactionService {
 
         transactionValidator.validatePin(pin.getPin(), request.getPin());
 
+        transactionValidator.validateStatus(request.getStatus());
+
         // expense sender
         transaction = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
                 LocalDateTime.now(), false);

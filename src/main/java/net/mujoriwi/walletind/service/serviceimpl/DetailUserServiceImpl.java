@@ -102,17 +102,17 @@ public class DetailUserServiceImpl implements DetailUserService {
     @Override
     public ResponseData<Object> getAllUserExceptCurrentUser(Long id) throws Exception {
         users = userRepository.findId(id);
+        System.out.println(users);
 
         list = new ArrayList<>();
         for (int i = 0; i < users.size(); i++) {
             user = users.get(i);
 
-            Optional<DetailUser> detailUserOpt = detailUserRepository.findByUserId(user);
-
             data = new HashMap<>();
             data.put("Id", user.getId());
             data.put("Username", user.getUserName());
 
+            Optional<DetailUser> detailUserOpt = detailUserRepository.findByIdUser(user.getId());
             if (detailUserOpt.isPresent()) {
                 detailUser = detailUserOpt.get();
                 data.put("PhoneNumber", detailUser.getPhoneNumber());

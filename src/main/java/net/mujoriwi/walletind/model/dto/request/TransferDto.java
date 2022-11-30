@@ -19,4 +19,6 @@ public class TransferDto {
     private String notes;
 
     private String pin;
+
+    private String status;
 }
