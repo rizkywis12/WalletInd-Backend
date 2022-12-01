@@ -17,7 +17,6 @@ public interface UserService {
 
     ResponseData<Object> getUserById(Long id) throws Exception;
 
-
     ResponseData<Object> getAll(long id);
 
 

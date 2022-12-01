@@ -20,9 +20,9 @@ import lombok.NoArgsConstructor;
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    private long amount;
+    private Long amount;
 
     private String notes;
 
@@ -53,6 +53,7 @@ public class Transaction {
     private TopUp topUpId;
 
     public Transaction(long amount, String notes, User senderId, User receiverId, String transactionType,
+
             Boolean status,
             LocalDateTime transactionCreated, Boolean transactionCategory) {
         this.amount = amount;

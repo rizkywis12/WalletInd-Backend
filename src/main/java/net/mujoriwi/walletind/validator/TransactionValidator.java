@@ -40,4 +40,10 @@ public class TransactionValidator {
             throw new CustomNotFoundException("Wrong pin!");
         }
     }
+
+    public void validateStatus(String requestStatus) throws Exception {
+        if (!requestStatus.equals("OK")) {
+            throw new CustomBadRequestException("You cancelling the transaction!");
+        }
+    }
 }
