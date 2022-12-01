@@ -5,8 +5,6 @@ import javax.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "top_up")
 @Data

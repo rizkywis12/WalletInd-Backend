@@ -53,7 +53,6 @@ public class Transaction {
     private TopUp topUpId;
 
     public Transaction(long amount, String notes, User senderId, User receiverId, String transactionType,
-
             Boolean status,
             LocalDateTime transactionCreated, Boolean transactionCategory) {
         this.amount = amount;
@@ -66,13 +65,15 @@ public class Transaction {
         this.transactionCategory = transactionCategory;
     }
 
-
-
-
-    public Transaction(long amount, String notes, User receiverId, TopUp topUpId) {
+    public Transaction(long amount, TopUp topUpId, User receiverId, String transactionType,
+            Boolean status,
+            LocalDateTime transactionCreated, Boolean transactionCategory) {
         this.amount = amount;
-        this.notes = notes;
         this.topUpId = topUpId;
         this.receiverId = receiverId;
+        this.transactionType = transactionType;
+        this.status = status;
+        this.transactionCreated = transactionCreated;
+        this.transactionCategory = transactionCategory;
     }
 }

@@ -47,28 +47,6 @@ public class UserController {
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 
-
-
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getById(@PathVariable long id) throws Exception {
-        responseData = userService.getUserById(id);
-        return ResponseEntity.status(responseData.getStatus()).body(responseData);
-    }
-
-    // @GetMapping("/{id}")
-    // public ResponseEntity<Object> getById(@PathVariable long id) throws Exception
-    // {
-    // responseData = userService.getUserById(id);
-    // return ResponseEntity.status(responseData.getStatus()).body(responseData);
-    // }
-
-    // @GetMapping("/getall")
-    // public ResponseEntity<Object> getAllUser() {
-    // responseData = userService.getAll();
-    // =======
-
-
     @GetMapping("/getall/{id}")
     public ResponseEntity<Object> getAllUser(@PathVariable long id) {
         responseData = userService.getAll(id);

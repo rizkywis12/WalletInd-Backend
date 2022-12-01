@@ -1,6 +1,8 @@
 package net.mujoriwi.walletind.service.serviceimpl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -30,17 +32,18 @@ public class TopUpServiceImpl implements TopUpService {
     @Autowired
     private TopUpValidator topUpValidator;
 
-
     private Map<Object, Object> data;
+
+    private List<Map<Object, Object>> listTopUp;
 
     void topUpInformation() {
         data = new HashMap<>();
-        data.put("payment name", topUp.getPaymentName());
+        data.put("paymentId", topUp.getId());
+        data.put("paymentName", topUp.getPaymentName());
     }
 
     @Override
     public ResponseData<Object> addTopUp(TopUpDto request) throws Exception {
-        // TODO Auto-generated method stub
         Optional<TopUp> topUpOpt = topUpRepository.findByPaymentName(request.getPaymentName());
         topUpValidator.validatePaymentNameExist(topUpOpt);
         topUp = new TopUp(request.getPaymentName());
@@ -48,9 +51,43 @@ public class TopUpServiceImpl implements TopUpService {
         topUpRepository.save(topUp);
 
         topUpInformation();
+
         responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Success added payment!", data);
 
         return responseData;
     }
-}
 
+    @Override
+    public ResponseData<Object> getAllTopUp() throws Exception {
+        List<TopUp> topUps = topUpRepository.findAll();
+
+        topUpValidator.validateListTopUpNotFound(topUps);
+
+        listTopUp = new ArrayList<>();
+
+        for (int i = 0; i < topUps.size(); i++) {
+            topUp = topUps.get(i);
+            topUpInformation();
+            listTopUp.add(data);
+        }
+
+        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Success get list topup!", listTopUp);
+
+        return responseData;
+    }
+
+    @Override
+    public ResponseData<Object> getTopUpById(long id) throws Exception {
+        Optional<TopUp> topUpOpt = topUpRepository.findById(id);
+
+        topUpValidator.validateTopUpNotFound(topUpOpt);
+
+        topUp = topUpOpt.get();
+
+        topUpInformation();
+
+        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Success get data payment!", data);
+
+        return responseData;
+    }
+}

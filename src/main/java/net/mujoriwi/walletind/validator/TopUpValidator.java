@@ -1,5 +1,6 @@
 package net.mujoriwi.walletind.validator;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -15,9 +16,15 @@ public class TopUpValidator {
         }
     }
 
-    public void validateTopUpNotFound( Optional<TopUp> topUpIdOpt) throws Exception {
+    public void validateTopUpNotFound(Optional<TopUp> topUpIdOpt) throws Exception {
         if (topUpIdOpt.isEmpty()) {
             throw new CustomNotFoundException("Payment not found. Please input correct payment");
+        }
+    }
+
+    public void validateListTopUpNotFound(List<TopUp> topUpAllOpt) throws Exception {
+        if (topUpAllOpt.isEmpty()) {
+            throw new CustomNotFoundException("Payment list not found. Please input payment!");
         }
     }
 }

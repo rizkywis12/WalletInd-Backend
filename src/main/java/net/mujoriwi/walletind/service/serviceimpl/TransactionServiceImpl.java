@@ -10,7 +10,6 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
-
 import net.mujoriwi.walletind.model.entity.TopUp;
 import net.mujoriwi.walletind.repository.TopUpRepository;
 import net.mujoriwi.walletind.validator.TopUpValidator;
@@ -19,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import net.mujoriwi.walletind.model.dto.request.TopUpTransactionDto;
 import net.mujoriwi.walletind.model.dto.request.TransferDto;
 import net.mujoriwi.walletind.model.dto.response.ResponseData;
 
@@ -58,7 +58,6 @@ public class TransactionServiceImpl implements TransactionService {
 
     private Pin pin;
 
-
     private Transaction transaction;
     private Transaction transaction2;
 
@@ -72,7 +71,6 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Autowired
     private TopUpValidator topUpValidator;
-
 
     private Map<Object, Object> data;
     private Map<Object, Object> listData;
@@ -90,7 +88,7 @@ public class TransactionServiceImpl implements TransactionService {
         data = new HashMap<>();
         data.put("id", transaction.getId());
         if (transaction.getSenderId() == null) {
-            data.put("sender", transaction.getSenderId());
+            data.put("sender", transaction.getTopUpId().getPaymentName());
         } else {
             data.put("sender", transaction.getSenderId().getUserName());
         }
@@ -106,7 +104,10 @@ public class TransactionServiceImpl implements TransactionService {
         data.put("transactionType", transaction.getTransactionType());
         data.put("transactionCategory", transaction.getTransactionCategory());
         data.put("timestamp", transaction.getTransactionCreated());
-        data.put("notes", transaction.getNotes());
+
+        if (transaction.getNotes() != null) {
+            data.put("notes", transaction.getNotes());
+        }
     }
 
     void history() {
@@ -115,15 +116,6 @@ public class TransactionServiceImpl implements TransactionService {
             transactionInformation();
             history.add(data);
         }
-    }
-    void topUpInformation() {
-        data = new HashMap<>();
-        data.put("Top Up From", transaction.getTopUpId().getPaymentName());
-        data.put("Receiver", transaction.getReceiverId().getUserName());
-        data.put("Receiver Balance", transaction.getReceiverId().getBalance());
-        data.put("Status", transaction.getStatus());
-        data.put("Transaction Type", transaction.getTransactionType());
-        data.put("Timestamp", transaction.getTransactionCreated());
     }
 
     private List<Transaction> getHistory(User user, LocalDateTime start, LocalDateTime end) {
@@ -153,9 +145,9 @@ public class TransactionServiceImpl implements TransactionService {
 
         Optional<Pin> pinOpt = pinRepository.findByUserId(sender);
 
-        // pin = pinOpt.get();
+        pin = pinOpt.get();
 
-        // transactionValidator.validatePin(pin.getPin(), request.getPin());
+        transactionValidator.validatePin(pin.getPin(), request.getPin());
 
         transactionValidator.validateStatus(request.getStatus());
 
@@ -186,26 +178,35 @@ public class TransactionServiceImpl implements TransactionService {
         return responseData;
     }
 
-
     @Override
-    public ResponseData<Object> addTopUp( Long topUpid , Long receiverId , TransferDto request) throws Exception {
+    public ResponseData<Object> addTopUp(Long topUpid, Long receiverId, TopUpTransactionDto request) throws Exception {
         Optional<User> receiverIdOpt = userRepository.findById(receiverId);
         Optional<TopUp> topUpIdOpt = topUpRepository.findById(topUpid);
+
         topUpValidator.validateTopUpNotFound(topUpIdOpt);
+
         userValidator.validateUserNotFound(receiverIdOpt);
+
         receiver = receiverIdOpt.get();
         topUp = topUpIdOpt.get();
-        transaction = new Transaction(request.getAmount(), request.getNotes(),  receiver, topUp);
-        transaction.setTransactionType("TopUp");
+
+        transactionValidator.validateMinimumAmount(request.getAmount());
+
+        transactionValidator.validateMaximumAmount(request.getAmount());
+
+        transaction = new Transaction(request.getAmount(), topUp, receiver, "TopUp", true, LocalDateTime.now(), true);
+
         receiver.setBalance(receiver.getBalance() + request.getAmount());
-        transaction.setTransactionCreated(LocalDateTime.now());
-        transaction.setStatus(false);
+
         userRepository.save(receiver);
         transactionRepository.save(transaction);
-        topUpInformation();
+
+        transactionInformation();
+
         responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Success Top Up", data);
         return responseData;
     }
+
     @Override
     public ResponseData<Object> getSumIncomeOrExpense(Long userId) throws Exception {
         Optional<User> userIdOpt = userRepository.findById(userId);
