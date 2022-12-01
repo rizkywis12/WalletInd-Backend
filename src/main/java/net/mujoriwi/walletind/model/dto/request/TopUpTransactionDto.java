@@ -12,4 +12,6 @@ import lombok.NoArgsConstructor;
 public class TopUpTransactionDto {
     @NotNull(message = "Amount is required")
     private Long amount;
+
+    private String status;
 }

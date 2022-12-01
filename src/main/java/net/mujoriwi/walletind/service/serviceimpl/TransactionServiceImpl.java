@@ -194,6 +194,8 @@ public class TransactionServiceImpl implements TransactionService {
 
         transactionValidator.validateMaximumAmount(request.getAmount());
 
+        transactionValidator.validateStatus(request.getStatus());
+
         transaction = new Transaction(request.getAmount(), topUp, receiver, "TopUp", true, LocalDateTime.now(), true);
 
         receiver.setBalance(receiver.getBalance() + request.getAmount());
