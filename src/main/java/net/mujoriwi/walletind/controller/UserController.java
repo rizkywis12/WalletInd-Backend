@@ -49,13 +49,13 @@ public class UserController {
 
 
 
+
     @GetMapping("/{id}")
     public ResponseEntity<Object> getById(@PathVariable long id) throws Exception {
         responseData = userService.getUserById(id);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 
-    // <<<<<<< HEAD
     // @GetMapping("/{id}")
     // public ResponseEntity<Object> getById(@PathVariable long id) throws Exception
     // {

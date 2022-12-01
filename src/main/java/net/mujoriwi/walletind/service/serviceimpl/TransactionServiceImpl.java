@@ -153,9 +153,9 @@ public class TransactionServiceImpl implements TransactionService {
 
         Optional<Pin> pinOpt = pinRepository.findByUserId(sender);
 
-        pin = pinOpt.get();
+        // pin = pinOpt.get();
 
-        transactionValidator.validatePin(pin.getPin(), request.getPin());
+        // transactionValidator.validatePin(pin.getPin(), request.getPin());
 
         transactionValidator.validateStatus(request.getStatus());
 
