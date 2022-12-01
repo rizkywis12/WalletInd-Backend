@@ -15,8 +15,6 @@ public interface UserService {
 
     ResponseData<Object> changePassword(long id, ChangePasswordDto request) throws Exception;
 
-    ResponseData<Object> getUserById(Long id) throws Exception;
-
     ResponseData<Object> getAll(long id);
 
     ResponseData<Object> getBalance(long id) throws Exception;
