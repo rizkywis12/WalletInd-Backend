@@ -46,7 +46,6 @@ public class UserController {
         responseData = userService.changePassword(id, request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
-
     @GetMapping("/getall/{id}")
     public ResponseEntity<Object> getAllUser(@PathVariable long id) {
         responseData = userService.getAll(id);

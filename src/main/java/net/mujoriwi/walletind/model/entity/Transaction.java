@@ -20,9 +20,9 @@ import lombok.NoArgsConstructor;
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    private long amount;
+    private Long amount;
 
     private String notes;
 
@@ -48,8 +48,7 @@ public class Transaction {
     @JoinColumn(name = "subscription_id")
     private Subscription subscriptionId;
 
-
-    public Transaction(long amount, String notes, User senderId, User receiverId, String transactionType,
+    public Transaction(Long amount, String notes, User senderId, User receiverId, String transactionType,
             Boolean status,
             LocalDateTime transactionCreated, Boolean transactionCategory) {
         this.amount = amount;
@@ -62,7 +61,7 @@ public class Transaction {
         this.transactionCategory = transactionCategory;
     }
 
-    public Transaction(long amount, User receiverId) {
+    public Transaction(Long amount, User receiverId) {
         this.amount = amount;
         this.receiverId = receiverId;
     }

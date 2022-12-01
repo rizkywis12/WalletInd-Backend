@@ -1,6 +1,7 @@
 package net.mujoriwi.walletind.service.serviceimpl;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,8 +38,6 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private UserRepository userRepository;
 
-
-
     @Autowired
     private PinRepository pinRepository;
 
@@ -58,7 +57,6 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Autowired
     private UserValidator userValidator;
-
 
     private Map<Object, Object> data;
     private Map<Object, Object> listData;
@@ -89,10 +87,10 @@ public class TransactionServiceImpl implements TransactionService {
 
         data.put("receiverBalance", transaction.getReceiverId().getBalance());
         data.put("amount", transaction.getAmount());
-        // data.put("Status", transaction.getStatus());
         data.put("transactionType", transaction.getTransactionType());
         data.put("transactionCategory", transaction.getTransactionCategory());
         data.put("timestamp", transaction.getTransactionCreated());
+        data.put("notes", transaction.getNotes());
     }
 
     void history() {
@@ -134,13 +132,19 @@ public class TransactionServiceImpl implements TransactionService {
 
         // transactionValidator.validatePin(pin.getPin(), request.getPin());
 
+        transactionValidator.validateStatus(request.getStatus());
+
+        String str = request.getDate();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
+
         // expense sender
         transaction = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
-                LocalDateTime.now(), false);
+                dateTime, false);
 
         // income receiver
         transaction2 = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
-                LocalDateTime.now(), true);
+                dateTime, true);
 
         sender.setBalance(sender.getBalance() - request.getAmount());
         receiver.setBalance(receiver.getBalance() + request.getAmount());
@@ -281,7 +285,7 @@ public class TransactionServiceImpl implements TransactionService {
             if (listData.isEmpty()) {
                 if (transaction.getTransactionCategory().equals(false)) {
                     sumExpenses += transaction.getAmount();
-                  } else if (transaction.getTransactionCategory().equals(true)) {
+                } else if (transaction.getTransactionCategory().equals(true)) {
                     sumIncomes += transaction.getAmount();
                 }
                 listData.put("Day",
