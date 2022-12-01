@@ -16,12 +16,10 @@ import org.springframework.stereotype.Service;
 
 import net.mujoriwi.walletind.model.dto.request.TransferDto;
 import net.mujoriwi.walletind.model.dto.response.ResponseData;
-
-
+import net.mujoriwi.walletind.model.entity.Pin;
 import net.mujoriwi.walletind.model.entity.Transaction;
 import net.mujoriwi.walletind.model.entity.User;
-
-
+import net.mujoriwi.walletind.repository.PinRepository;
 import net.mujoriwi.walletind.repository.TransactionRepository;
 import net.mujoriwi.walletind.repository.UserRepository;
 import net.mujoriwi.walletind.service.service.TransactionService;
@@ -47,6 +45,7 @@ public class TransactionServiceImpl implements TransactionService {
     private User sender;
     private User receiver;
     private User user;
+    private Pin pin;
 
 
     private Transaction transaction;
@@ -131,9 +130,9 @@ public class TransactionServiceImpl implements TransactionService {
 
         Optional<Pin> pinOpt = pinRepository.findByUserId(sender);
 
-        pin = pinOpt.get();
+        // pin = pinOpt.get();
 
-        transactionValidator.validatePin(pin.getPin(), request.getPin());
+        // transactionValidator.validatePin(pin.getPin(), request.getPin());
 
         // expense sender
         transaction = new Transaction(request.getAmount(), request.getNotes(), sender, receiver, "Transfer", true,
