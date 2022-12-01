@@ -30,8 +30,7 @@ public class DetailUser {
     @Column(length = 50)
     private String phoneNumber;
 
-    @Column(length = 50)
-    private String userImage;
+
     
     @OneToOne
     @JoinColumn(name = "user_id")
