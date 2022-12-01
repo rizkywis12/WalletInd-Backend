@@ -136,4 +136,17 @@ public class UserServiceImpl implements UserService {
 
         return responseData;
     }
+
+    @Override
+    public ResponseData<Object> getUserById(Long id) throws Exception {
+       
+        Optional<User> userOpt = userRepository.findById(id);
+        userValidator.validateUserNotFound(userOpt);
+        user = userOpt.get();
+        userInformation();
+        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "success", data);
+        return responseData;
+        
+    }
+
 }

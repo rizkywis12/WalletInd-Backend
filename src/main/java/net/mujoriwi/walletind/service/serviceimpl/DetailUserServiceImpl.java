@@ -46,8 +46,8 @@ public class DetailUserServiceImpl implements DetailUserService {
     void DetailuserInformation() {
         data = new HashMap<>();
         data.put("Email", user.getEmail());
-        data.put("First Name", detailUser.getFirstName());
-        data.put("Last Name", detailUser.getLastName());
+        data.put("firstName", detailUser.getFirstName());
+        data.put("lastName", detailUser.getLastName());
         data.put("PhoneNumber", detailUser.getPhoneNumber());
     }
 

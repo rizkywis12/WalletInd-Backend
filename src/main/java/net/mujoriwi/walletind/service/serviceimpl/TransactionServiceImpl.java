@@ -9,7 +9,12 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
-import net.mujoriwi.walletind.model.dto.request.TopupDto;
+
+import net.mujoriwi.walletind.model.entity.TopUp;
+import net.mujoriwi.walletind.repository.TopUpRepository;
+import net.mujoriwi.walletind.validator.TopUpValidator;
+import net.mujoriwi.walletind.model.entity.TopUp;
+import net.mujoriwi.walletind.validator.TopUpValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,7 +24,6 @@ import net.mujoriwi.walletind.model.dto.response.ResponseData;
 
 import net.mujoriwi.walletind.model.entity.Transaction;
 import net.mujoriwi.walletind.model.entity.User;
-
 
 import net.mujoriwi.walletind.model.entity.Pin;
 import net.mujoriwi.walletind.repository.PinRepository;
@@ -44,13 +48,18 @@ public class TransactionServiceImpl implements TransactionService {
 
 
     @Autowired
+    private TopUpRepository topUpRepository;
+
+    @Autowired
     private PinRepository pinRepository;
 
     private User sender;
     private User receiver;
     private User user;
+    private TopUp topUp;
 
     private Pin pin;
+
 
     private Transaction transaction;
     private Transaction transaction2;
@@ -62,7 +71,8 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Autowired
     private UserValidator userValidator;
-
+    @Autowired
+    private TopUpValidator topUpValidator;
 
     private Map<Object, Object> data;
     private Map<Object, Object> listData;
@@ -105,6 +115,15 @@ public class TransactionServiceImpl implements TransactionService {
             transactionInformation();
             history.add(data);
         }
+    }
+    void topUpInformation() {
+        data = new HashMap<>();
+        data.put("Top Up From", transaction.getTopUpId().getPaymentName());
+        data.put("Receiver", transaction.getReceiverId().getUserName());
+        data.put("Receiver Balance", transaction.getReceiverId().getBalance());
+        data.put("Status", transaction.getStatus());
+        data.put("Transaction Type", transaction.getTransactionType());
+        data.put("Timestamp", transaction.getTransactionCreated());
     }
 
     private List<Transaction> getHistory(User user, LocalDateTime start, LocalDateTime end) {
@@ -161,30 +180,26 @@ public class TransactionServiceImpl implements TransactionService {
         return responseData;
     }
 
+
     @Override
-    public ResponseData<Object> addTopUp(Long receiverId, TopupDto request) throws Exception {
+    public ResponseData<Object> addTopUp( Long topUpid , Long receiverId , TransferDto request) throws Exception {
         Optional<User> receiverIdOpt = userRepository.findById(receiverId);
-
+        Optional<TopUp> topUpIdOpt = topUpRepository.findById(topUpid);
+        topUpValidator.validateTopUpNotFound(topUpIdOpt);
         userValidator.validateUserNotFound(receiverIdOpt);
-
         receiver = receiverIdOpt.get();
-
-        transaction = new Transaction(request.getAmount(), receiver);
+        topUp = topUpIdOpt.get();
+        transaction = new Transaction(request.getAmount(), request.getNotes(),  receiver, topUp);
         transaction.setTransactionType("TopUp");
         receiver.setBalance(receiver.getBalance() + request.getAmount());
-        transaction.setTransactionCreated(LocalDateTime.now().minusDays(20));
-        transaction.setStatus(true);
-        transaction.setTransactionCategory(true);
-
+        transaction.setTransactionCreated(LocalDateTime.now());
+        transaction.setStatus(false);
         userRepository.save(receiver);
         transactionRepository.save(transaction);
-
-        transactionInformation();
-
+        topUpInformation();
         responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Success Top Up", data);
         return responseData;
     }
-
     @Override
     public ResponseData<Object> getSumIncomeOrExpense(Long userId) throws Exception {
         Optional<User> userIdOpt = userRepository.findById(userId);
@@ -285,7 +300,7 @@ public class TransactionServiceImpl implements TransactionService {
             if (listData.isEmpty()) {
                 if (transaction.getTransactionCategory().equals(false)) {
                     sumExpenses += transaction.getAmount();
-                } else if (transaction.getTransactionCategory().equals(true)) {
+                  } else if (transaction.getTransactionCategory().equals(true)) {
                     sumIncomes += transaction.getAmount();
                 }
                 listData.put("Day",
