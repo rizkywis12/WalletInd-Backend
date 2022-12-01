@@ -48,7 +48,12 @@ public class Transaction {
     @JoinColumn(name = "subscription_id")
     private Subscription subscriptionId;
 
-    public Transaction(Long amount, String notes, User senderId, User receiverId, String transactionType,
+    @ManyToOne
+    @JoinColumn(name = "top_up_id")
+    private TopUp topUpId;
+
+    public Transaction(long amount, String notes, User senderId, User receiverId, String transactionType,
+
             Boolean status,
             LocalDateTime transactionCreated, Boolean transactionCategory) {
         this.amount = amount;
@@ -61,8 +66,13 @@ public class Transaction {
         this.transactionCategory = transactionCategory;
     }
 
-    public Transaction(Long amount, User receiverId) {
+
+
+
+    public Transaction(long amount, String notes, User receiverId, TopUp topUpId) {
         this.amount = amount;
+        this.notes = notes;
+        this.topUpId = topUpId;
         this.receiverId = receiverId;
     }
 }

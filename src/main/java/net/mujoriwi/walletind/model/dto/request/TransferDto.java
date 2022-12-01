@@ -15,7 +15,7 @@ public class TransferDto {
     @NotNull(message = "Amount is required")
     private Long amount;
 
-    @NotBlank(message = "Notes is required")
+
     private String notes;
 
     private String pin;

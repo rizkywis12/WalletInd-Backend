@@ -17,5 +17,6 @@ public interface UserService {
 
     ResponseData<Object> getAll(long id);
 
+
     ResponseData<Object> getBalance(long id) throws Exception;
 }

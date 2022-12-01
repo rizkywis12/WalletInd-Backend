@@ -126,9 +126,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-
     public ResponseData<Object> getBalance(long id) throws Exception {
-
         Optional<User> userOpt = userRepository.findById(id);
 
         userValidator.validateUserNotFound(userOpt);
@@ -137,10 +135,7 @@ public class UserServiceImpl implements UserService {
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Success!", user.getBalance());
 
         return responseData;
-
     }
 
+   
 
-    
-
-}
