@@ -26,32 +26,32 @@ public class FileServiceImpl implements FileService {
     @Autowired
     private UserValidator userValidator;
 
-    private  FileEntity fileEntity;
+    private FileEntity fileEntity;
 
     private User user;
 
     @Override
     public FileEntity store(MultipartFile file, Long user_id) throws IOException, Exception {
-    // TODO Auto-generated method stub
-    Optional<User> userOpt = userRepository.findById(user_id);
-    userValidator.validateUserNotFound(userOpt);
-    user = userOpt.get();
-    Optional<FileEntity> fileEntityOpt = fileRepository.findByUserId(user);
-    fileValidator.validateUserIdExist(fileEntityOpt);
-    String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-    fileEntity = new FileEntity(fileName, file.getContentType(), file.getBytes());
-    fileEntity.setUserId(user);
-    return fileRepository.save(fileEntity);
-  }
-    
+        // TODO Auto-generated method stub
+        Optional<User> userOpt = userRepository.findById(user_id);
+        userValidator.validateUserNotFound(userOpt);
+        user = userOpt.get();
+        Optional<FileEntity> fileEntityOpt = fileRepository.findByUserId(user);
+        fileValidator.validateUserIdExist(fileEntityOpt);
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        fileEntity = new FileEntity(fileName, file.getContentType(), file.getBytes());
+        fileEntity.setUserId(user);
+        return fileRepository.save(fileEntity);
+    }
+
     @Override
-    public FileEntity updateFile(MultipartFile file,Long user_id, String id) throws IOException, Exception {
+    public FileEntity updateFile(MultipartFile file, Long user_id, String id) throws IOException, Exception {
         Optional<User> userOpt = userRepository.findById(user_id);
         userValidator.validateUserNotFound(userOpt);
         user = userOpt.get();
         Optional<FileEntity> fileEntityOpt = fileRepository.findById(id);
-        fileEntity = fileEntityOpt.get();  
-          
+        fileEntity = fileEntityOpt.get();
+
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         fileEntity.setName(fileName);
         fileEntity.setType(file.getContentType());
@@ -65,5 +65,5 @@ public class FileServiceImpl implements FileService {
         // TODO Auto-generated method stub
         return fileRepository.findById(id).get();
     }
-    
+
 }

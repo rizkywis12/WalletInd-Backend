@@ -13,6 +13,7 @@ import net.mujoriwi.walletind.model.dto.request.TopUpDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import net.mujoriwi.walletind.model.dto.response.ResponseData;
 import net.mujoriwi.walletind.model.entity.TopUp;
@@ -40,6 +41,12 @@ public class TopUpServiceImpl implements TopUpService {
         data = new HashMap<>();
         data.put("paymentId", topUp.getId());
         data.put("paymentName", topUp.getPaymentName());
+        String fileDownloadUri = ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/files/top-up/")
+                .path(Long.toString(topUp.getId()))
+                .toUriString();
+        data.put("paymentImage", fileDownloadUri);
     }
 
     @Override
