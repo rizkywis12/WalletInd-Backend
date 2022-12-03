@@ -17,6 +17,7 @@ import net.mujoriwi.walletind.validator.TopUpValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import net.mujoriwi.walletind.model.dto.request.TopUpTransactionDto;
 import net.mujoriwi.walletind.model.dto.request.TransferDto;
@@ -89,11 +90,18 @@ public class TransactionServiceImpl implements TransactionService {
         data.put("id", transaction.getId());
         if (transaction.getSenderId() == null) {
             data.put("sender", transaction.getTopUpId().getPaymentName());
+            String fileDownloadUri = ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/files/top-up/")
+                    .path(Long.toString(transaction.getTopUpId().getId()))
+                    .toUriString();
+            data.put("senderImage", fileDownloadUri);
         } else {
             data.put("sender", transaction.getSenderId().getUserName());
         }
 
         data.put("receiver", transaction.getReceiverId().getUserName());
+        data.put("receiverImage", null);
 
         if (transaction.getSenderId() != null) {
             data.put("senderBalance", transaction.getSenderId().getBalance());
