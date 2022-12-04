@@ -11,7 +11,7 @@ import net.mujoriwi.walletind.model.entity.FileEntity;
 public class FileValidator {
     public void validateUserIdExist(Optional<FileEntity> fileEntityOpt) throws Exception {
         if (fileEntityOpt.isPresent()) {
-            throw new CustomNotFoundException("user already exist");
+            throw new CustomNotFoundException("Image already exist");
         }
     }
     public void validateFileNotFound(Optional<FileEntity> fileEntityOpt) throws Exception {
