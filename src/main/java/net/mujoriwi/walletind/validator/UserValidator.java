@@ -59,5 +59,9 @@ public class UserValidator {
                     "Your balance is empty. Please top up before do transfer to others...");
         }
     }
-
+    public void validateUserFound(Optional<User> userFind) throws Exception {
+        if (userFind.isPresent()) {
+            throw new CustomBadRequestException("User is found");
+        }
+    }
 }

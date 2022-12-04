@@ -59,7 +59,7 @@ public class DetailUserServiceImpl implements DetailUserService {
         Optional<DetailUser> detailUserOpt = detailUserRepository.findByUserId(user);
         DetailUserValidator.validateUserIdExist(detailUserOpt);
         detailUser = new DetailUser(request.getFirstName(), request.getLastName(), request.getPhoneNumber());
-        detailUser.setUserId(user);
+        detailUser.setUser(user);
         detailUserRepository.save(detailUser);
         DetailuserInformation();
         responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Succes add information", data);
@@ -78,7 +78,7 @@ public class DetailUserServiceImpl implements DetailUserService {
         detailUser.setFirstName(request.getFirstName());
         detailUser.setLastName(request.getLastName());
         detailUser.setPhoneNumber(request.getPhoneNumber());
-        detailUser.setUserId(user);
+        detailUser.setUser(user);
         detailUserRepository.save(detailUser);
         DetailuserInformation();
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Your Data Has Been Updated!!", data);
