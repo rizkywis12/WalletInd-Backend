@@ -3,8 +3,10 @@ package net.mujoriwi.walletind.controller;
 import javax.validation.Valid;
 
 import net.mujoriwi.walletind.model.dto.request.ChangePasswordDto;
+import net.mujoriwi.walletind.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import net.mujoriwi.walletind.model.dto.request.ForgotPasswordDto;
@@ -17,6 +19,11 @@ import net.mujoriwi.walletind.service.service.UserService;
 @RequestMapping("/users")
 @CrossOrigin(value = "http://localhost:3000")
 public class UserController {
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private UserService userService;
 
