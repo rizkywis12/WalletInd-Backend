@@ -7,14 +7,13 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
-import net.mujoriwi.walletind.model.dto.request.ChangePasswordDto;
+import net.mujoriwi.walletind.model.dto.request.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import net.mujoriwi.walletind.model.dto.request.ForgotPasswordDto;
-import net.mujoriwi.walletind.model.dto.request.LoginDto;
-import net.mujoriwi.walletind.model.dto.request.RegisterDto;
 import net.mujoriwi.walletind.model.dto.response.ResponseData;
 import net.mujoriwi.walletind.model.entity.User;
 import net.mujoriwi.walletind.repository.UserRepository;
@@ -35,6 +34,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserValidator userValidator;
 
+    @Autowired
+    JavaMailSender javaMailSender;
     private Map<Object, Object> data;
 
     void userInformation() {
@@ -82,8 +83,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseData<Object> forgotPassword(ForgotPasswordDto request) throws Exception {
-        Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
+    public ResponseData<Object> forgotPassword(String Email,ForgotPasswordDto request) throws Exception {
+        Optional<User> userOpt = userRepository.findByEmail(Email);
 
         userValidator.validateUserNotFound(userOpt);
 
@@ -134,6 +135,18 @@ public class UserServiceImpl implements UserService {
 
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Success!", user.getBalance());
 
+        return responseData;
+    }
+    @Override
+    public ResponseData<Object> verficationEmail(EmailRequest email) throws Exception {
+        user = userRepository.findByEmail(email.getEmail()).get();
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email.getEmail());
+        message.setSubject("Forgot Password");
+        message.setText("Here Is Link Reset Password: http://localhost:3000/confirm/" + email.getEmail());
+        javaMailSender.send(message);
+        userInformation();
+        responseData = new ResponseData<Object>(200, "sent",data);
         return responseData;
     }
 }
