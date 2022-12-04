@@ -31,6 +31,8 @@ public class User {
     @Column(nullable = false)
     private long balance = 0;
 
+
+    private Boolean isDeleted = false;
     public User(String email, String password) {
         this.email = email;
         this.password = password;

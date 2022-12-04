@@ -24,4 +24,6 @@ public class RegisterDto {
     @NotBlank(message = "User name is required")
     @Pattern(regexp = "^[a-zA-Z0-9._-]{3,}$", message = "input minimum 3 characters and only accepts a-z, A-Z, 0-9, ., - and _")
     private String userName;
+
+    private String role;
 }

@@ -15,4 +15,6 @@ public interface DetailUserRepository extends JpaRepository<DetailUser, Long> {
 
     @Query(value = "SELECT * FROM detail_users WHERE user_id = ?1", nativeQuery = true)
     Optional<DetailUser> findByIdUser(Long id);
+
+    Optional<DetailUser> findByUser(User user);
 }

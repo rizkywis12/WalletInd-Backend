@@ -4,5 +4,6 @@ import net.mujoriwi.walletind.model.dto.request.MailDto;
 
 
 public interface MailService {
-    void sendMail(MailDto request);
+    void sendMail
+            (MailDto request);
 }
