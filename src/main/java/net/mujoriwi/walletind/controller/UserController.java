@@ -2,14 +2,11 @@ package net.mujoriwi.walletind.controller;
 
 import javax.validation.Valid;
 
-import net.mujoriwi.walletind.model.dto.request.ChangePasswordDto;
+import net.mujoriwi.walletind.model.dto.request.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import net.mujoriwi.walletind.model.dto.request.ForgotPasswordDto;
-import net.mujoriwi.walletind.model.dto.request.LoginDto;
-import net.mujoriwi.walletind.model.dto.request.RegisterDto;
 import net.mujoriwi.walletind.model.dto.response.ResponseData;
 import net.mujoriwi.walletind.service.service.UserService;
 
@@ -34,9 +31,9 @@ public class UserController {
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 
-    @PutMapping("/forgot-password")
-    public ResponseEntity<Object> forgotPassword(@RequestBody @Valid ForgotPasswordDto request) throws Exception {
-        responseData = userService.forgotPassword(request);
+    @PutMapping("/forgot-password/{email}")
+    public ResponseEntity<Object> forgotPassword(@PathVariable String email ,@RequestBody @Valid ForgotPasswordDto request) throws Exception {
+        responseData = userService.forgotPassword(email,request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 
@@ -58,5 +55,9 @@ public class UserController {
         responseData = userService.getBalance(id);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
-
+    @PostMapping("/verif/email")
+    public ResponseEntity<Object> verificationEmail(@RequestBody EmailRequest email) throws Exception{
+        responseData = userService.verficationEmail(email);
+        return ResponseEntity.status(responseData.getStatus()).body(responseData);
+    }
 }
