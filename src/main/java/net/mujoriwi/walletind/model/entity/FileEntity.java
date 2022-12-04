@@ -1,5 +1,6 @@
 package net.mujoriwi.walletind.model.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -22,13 +23,16 @@ public class FileEntity {
   @GeneratedValue(generator = "uuid")
   @GenericGenerator(name = "uuid", strategy = "uuid2")
   private String id;
+  @Column(nullable = false)
   private String name;
+  @Column(nullable = false)
   private String type;
   @OneToOne
   @JoinColumn(name = "user_id")
   private User userId;
 
   @Lob
+  @Column(nullable = false)
   private byte[] data;
 
   public FileEntity(String name, String type, byte[] data) {

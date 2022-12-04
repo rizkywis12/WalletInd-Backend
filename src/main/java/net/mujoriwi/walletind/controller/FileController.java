@@ -2,9 +2,12 @@ package net.mujoriwi.walletind.controller;
 
 import java.io.IOException;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +23,7 @@ import net.mujoriwi.walletind.service.service.FileService;
 
 @RestController
 @RequestMapping("/files")
+@CrossOrigin(value = "http://localhost:3000")
 public class FileController {
   @Autowired
   private FileService fileService;
@@ -27,7 +31,7 @@ public class FileController {
   private ResponseData<Object> responseData;
 
   @PostMapping("/upload/{user_id}")
-  public ResponseEntity<Object> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable Long user_id)
+  public ResponseEntity<Object> uploadFile(@Valid @RequestParam("file") MultipartFile file, @PathVariable Long user_id)
       throws IOException, Exception {
     fileService.store(file, user_id);
     String message = "Uploaded the file successfully: " + file.getOriginalFilename();
