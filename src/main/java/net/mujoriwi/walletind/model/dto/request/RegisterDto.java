@@ -26,4 +26,6 @@ public class RegisterDto {
     private String userName;
 
     private String role;
+
 }
+

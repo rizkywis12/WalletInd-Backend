@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+
 import net.mujoriwi.walletind.model.dto.request.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -106,6 +107,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseData<Object> login(LoginDto request) throws Exception {
+
         Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 request.getEmail(), request.getPassword());
@@ -121,7 +123,7 @@ public class UserServiceImpl implements UserService {
 
         // User : Database - Model/Entity/User
         user = userOpt.get();
-
+        
         data = new HashMap<>();
         data.put("id", user.getId());
         data.put("token", jwtToken);
