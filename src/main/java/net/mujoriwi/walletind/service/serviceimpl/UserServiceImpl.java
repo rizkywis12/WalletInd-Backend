@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
-
 import net.mujoriwi.walletind.model.dto.request.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,13 +39,12 @@ import net.mujoriwi.walletind.validator.UserValidator;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-
     @Autowired
     private DetailUserRepository detailUserRepository;
     @Autowired
     private UserRoleRepository userRoleRepository;
     @Autowired
-    private RoleRepository  roleRepository;
+    private RoleRepository roleRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -69,8 +67,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     JavaMailSender javaMailSender;
     private Map<Object, Object> data;
-
-
 
     @Override
     public ResponseData<Object> register(RegisterDto request) throws Exception {
@@ -128,7 +124,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseData<Object> forgotPassword(String Email,ForgotPasswordDto request) throws Exception {
+    public ResponseData<Object> forgotPassword(String Email, ForgotPasswordDto request) throws Exception {
         Optional<User> userOpt = userRepository.findByEmail(Email);
 
         userValidator.validateUserNotFound(userOpt);
@@ -156,7 +152,6 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(request.getNewPassword());
 
-
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Successfully Change your password!", data);
 
         return responseData;
@@ -180,6 +175,7 @@ public class UserServiceImpl implements UserService {
 
         return responseData;
     }
+
     @Override
     public ResponseData<Object> verficationEmail(EmailRequest email) throws Exception {
         user = userRepository.findByEmail(email.getEmail()).get();
@@ -188,7 +184,7 @@ public class UserServiceImpl implements UserService {
         message.setSubject("Forgot Password");
         message.setText("Here Is Link Reset Password: http://localhost:3000/confirm/" + email.getEmail());
         javaMailSender.send(message);
-        responseData = new ResponseData<Object>(200, "sent",data);
+        responseData = new ResponseData<Object>(200, "sent", data);
         return responseData;
     }
 }

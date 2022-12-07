@@ -2,7 +2,6 @@ package net.mujoriwi.walletind.controller;
 
 import javax.validation.Valid;
 
-
 import net.mujoriwi.walletind.model.dto.request.*;
 
 import net.mujoriwi.walletind.model.dto.request.ChangePasswordDto;
@@ -43,8 +42,9 @@ public class UserController {
     }
 
     @PutMapping("/forgot-password/{email}")
-    public ResponseEntity<Object> forgotPassword(@PathVariable String email ,@RequestBody @Valid ForgotPasswordDto request) throws Exception {
-        responseData = userService.forgotPassword(email,request);
+    public ResponseEntity<Object> forgotPassword(@PathVariable String email,
+            @RequestBody @Valid ForgotPasswordDto request) throws Exception {
+        responseData = userService.forgotPassword(email, request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 
@@ -66,8 +66,9 @@ public class UserController {
         responseData = userService.getBalance(id);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
+
     @PostMapping("/verif/email")
-    public ResponseEntity<Object> verificationEmail(@RequestBody EmailRequest email) throws Exception{
+    public ResponseEntity<Object> verificationEmail(@RequestBody EmailRequest email) throws Exception {
         responseData = userService.verficationEmail(email);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
