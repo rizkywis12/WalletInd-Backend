@@ -7,6 +7,10 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> 12c5d090b48455b9c9e3d06a54ab85c79ce896f0
 import net.mujoriwi.walletind.model.dto.request.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -68,6 +72,17 @@ public class UserServiceImpl implements UserService {
     JavaMailSender javaMailSender;
     private Map<Object, Object> data;
 
+<<<<<<< HEAD
+    void userInformation() {
+        data = new HashMap<>();
+        data.put("id", user.getId());
+        data.put("email", user.getEmail());
+        data.put("username", user.getUserName());
+        data.put("balance", user.getBalance());
+    }
+
+=======
+>>>>>>> 12c5d090b48455b9c9e3d06a54ab85c79ce896f0
     @Override
     public ResponseData<Object> register(RegisterDto request) throws Exception {
         Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
