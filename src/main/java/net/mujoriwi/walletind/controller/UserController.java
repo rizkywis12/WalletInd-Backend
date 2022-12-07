@@ -2,10 +2,10 @@ package net.mujoriwi.walletind.controller;
 
 import javax.validation.Valid;
 
-<<<<<<< HEAD
+// <<<<<<< HEAD
 
-=======
->>>>>>> 12c5d090b48455b9c9e3d06a54ab85c79ce896f0
+// =======
+// >>>>>>> 12c5d090b48455b9c9e3d06a54ab85c79ce896f0
 import net.mujoriwi.walletind.model.dto.request.*;
 
 import net.mujoriwi.walletind.model.dto.request.ChangePasswordDto;
