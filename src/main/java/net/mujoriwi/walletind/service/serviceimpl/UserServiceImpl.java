@@ -7,10 +7,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 12c5d090b48455b9c9e3d06a54ab85c79ce896f0
 import net.mujoriwi.walletind.model.dto.request.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -72,17 +69,6 @@ public class UserServiceImpl implements UserService {
     JavaMailSender javaMailSender;
     private Map<Object, Object> data;
 
-<<<<<<< HEAD
-    void userInformation() {
-        data = new HashMap<>();
-        data.put("id", user.getId());
-        data.put("email", user.getEmail());
-        data.put("username", user.getUserName());
-        data.put("balance", user.getBalance());
-    }
-
-=======
->>>>>>> 12c5d090b48455b9c9e3d06a54ab85c79ce896f0
     @Override
     public ResponseData<Object> register(RegisterDto request) throws Exception {
         Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
@@ -110,6 +96,7 @@ public class UserServiceImpl implements UserService {
         userRoleRepository.save(userRole);
 
         data = new HashMap<>();
+        data.put("id", user.getId());
         data.put("email", user.getEmail());
         data.put("password", user.getPassword());
         data.put("username", user.getUserName());
@@ -120,6 +107,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseData<Object> login(LoginDto request) throws Exception {
+
+        Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 request.getEmail(), request.getPassword());
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
@@ -129,11 +118,18 @@ public class UserServiceImpl implements UserService {
         // generate token
         String jwtToken = jwtUtil.generateJwtToken(authentication);
         UserDetails userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        // Validate user is not found
+        userValidator.validateUserNotFound(userOpt);
 
+        // User : Database - Model/Entity/User
+        user = userOpt.get();
+        
         data = new HashMap<>();
+        data.put("id", user.getId());
         data.put("token", jwtToken);
+        data.put("balance", user.getBalance());
+        data.put("username", user.getUserName());
         data.put("email", userDetails.getUsername());
-
         responseData = new ResponseData<Object>(200, "Success", data);
         return responseData;
     }

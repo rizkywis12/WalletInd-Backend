@@ -56,7 +56,7 @@ public class DetailUserServiceImpl implements DetailUserService {
         Optional<User> userOpt = userRepository.findById(id);
         userValidator.validateUserNotFound(userOpt);
         user = userOpt.get();
-        Optional<DetailUser> detailUserOpt = detailUserRepository.findByUserId(user);
+        Optional<DetailUser> detailUserOpt = detailUserRepository.findByUser(user);
         DetailUserValidator.validateUserIdExist(detailUserOpt);
         detailUser = new DetailUser(request.getFirstName(), request.getLastName(), request.getPhoneNumber());
         detailUser.setUser(user);
@@ -71,8 +71,7 @@ public class DetailUserServiceImpl implements DetailUserService {
         Optional<User> userOpt = userRepository.findById(id);
         userValidator.validateUserNotFound(userOpt);
         user = userOpt.get();
-        Optional<DetailUser> detailUserOptional = detailUserRepository.findByUserId(user);
-
+        Optional<DetailUser> detailUserOptional = detailUserRepository.findByUser(user);
         DetailUserValidator.validateDetailNotFound(detailUserOptional);
         detailUser = detailUserOptional.get();
         detailUser.setFirstName(request.getFirstName());
