@@ -1,9 +1,6 @@
 package net.mujoriwi.walletind.service.service;
 
-import net.mujoriwi.walletind.model.dto.request.ChangePasswordDto;
-import net.mujoriwi.walletind.model.dto.request.ForgotPasswordDto;
-import net.mujoriwi.walletind.model.dto.request.LoginDto;
-import net.mujoriwi.walletind.model.dto.request.RegisterDto;
+import net.mujoriwi.walletind.model.dto.request.*;
 import net.mujoriwi.walletind.model.dto.response.ResponseData;
 
 public interface UserService {
@@ -17,6 +14,6 @@ public interface UserService {
 
     ResponseData<Object> getAll(long id);
 
-
+    ResponseData<Object>  verficationEmail(EmailRequest email) throws Exception;
     ResponseData<Object> getBalance(long id) throws Exception;
 }

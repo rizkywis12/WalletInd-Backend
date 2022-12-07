@@ -34,7 +34,7 @@ public class DetailUser {
     
     @OneToOne
     @JoinColumn(name = "user_id")
-    private User userId;
+    private User user;
 
 
 

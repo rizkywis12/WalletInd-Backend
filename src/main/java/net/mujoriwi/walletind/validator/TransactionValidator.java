@@ -41,12 +41,6 @@ public class TransactionValidator {
         }
     }
 
-    public void validateStatus(String requestStatus) throws Exception {
-        if (!requestStatus.equals("OK")) {
-            throw new CustomBadRequestException("You cancelling the transaction!");
-        }
-    }
-
     public void validateMaximumAmount(Long amountRequest) throws Exception {
         if (amountRequest > 10000000) {
             throw new CustomBadRequestException("Maximum topup = Rp. 10.000.000");
