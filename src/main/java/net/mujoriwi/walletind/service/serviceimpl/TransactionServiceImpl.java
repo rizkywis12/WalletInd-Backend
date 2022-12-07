@@ -98,10 +98,25 @@ public class TransactionServiceImpl implements TransactionService {
             data.put("senderImage", fileDownloadUri);
         } else {
             data.put("sender", transaction.getSenderId().getUserName());
+
+            String fileSenderUri = ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/files/")
+                    .path(Long.toString(transaction.getSenderId().getId()))
+                    .toUriString();
+
+            data.put("senderImage", fileSenderUri);
         }
 
         data.put("receiver", transaction.getReceiverId().getUserName());
-        data.put("receiverImage", null);
+
+        String fileReceiverUri = ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/files/")
+                .path(Long.toString(transaction.getReceiverId().getId()))
+                .toUriString();
+
+        data.put("receiverImage", fileReceiverUri);
 
         if (transaction.getSenderId() != null) {
             data.put("senderBalance", transaction.getSenderId().getBalance());

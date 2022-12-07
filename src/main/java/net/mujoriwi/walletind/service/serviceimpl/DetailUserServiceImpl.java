@@ -9,6 +9,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import net.mujoriwi.walletind.model.dto.request.DetailUserDto;
 import net.mujoriwi.walletind.model.dto.response.ResponseData;
 import net.mujoriwi.walletind.model.entity.DetailUser;
@@ -119,6 +121,14 @@ public class DetailUserServiceImpl implements DetailUserService {
                 data.put("PhoneNumber", "-");
             }
 
+            String fileReceiverUri = ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/files/")
+                    .path(Long.toString(user.getId()))
+                    .toUriString();
+
+            data.put("receiverImage", fileReceiverUri);
+
             list.add(data);
         }
 
@@ -129,9 +139,10 @@ public class DetailUserServiceImpl implements DetailUserService {
     @Override
     public ResponseData<Object> getUserInformationById(Long id) throws Exception {
         Optional<User> userOpt = userRepository.findById(id);
-        Optional<DetailUser> detailUserOpt = detailUserRepository.findByUserId(user);
 
         user = userOpt.get();
+
+        Optional<DetailUser> detailUserOpt = detailUserRepository.findByIdUser(user.getId());
 
         data = new HashMap<>();
         data.put("Id", user.getId());
@@ -143,6 +154,15 @@ public class DetailUserServiceImpl implements DetailUserService {
         } else {
             data.put("PhoneNumber", "-");
         }
+
+        String fileReceiverUri = ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/files/")
+                .path(Long.toString(user.getId()))
+                .toUriString();
+
+        data.put("receiverImage", fileReceiverUri);
+
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "success", data);
         return responseData;
     }
