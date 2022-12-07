@@ -39,18 +39,17 @@ public class FileController {
     return ResponseEntity.ok().body(responseData);
   }
 
-  @PutMapping("/upload/{user_id}/{id}")
-  public ResponseEntity<Object> updateFile(@RequestParam("file") MultipartFile file, @PathVariable Long user_id,
-      @PathVariable String id) throws IOException, Exception {
-    fileService.updateFile(file, user_id, id);
+  @PutMapping("/upload/{user_id}")
+  public ResponseEntity<Object> updateFile(@RequestParam("file") MultipartFile file, @PathVariable Long user_id) throws IOException, Exception {
+    fileService.updateFile(file, user_id);
     String message = "Updateded the file successfully: " + file.getOriginalFilename();
     responseData = new ResponseData<Object>(200, message, null);
     return ResponseEntity.ok().body(responseData);
   }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<Object> getFile(@PathVariable String id) {
-    FileEntity fileEntity = fileService.getFile(id);
+  @GetMapping("/{user_id}")
+  public ResponseEntity<Object> getFile(@PathVariable Long user_id) throws Exception {
+    FileEntity fileEntity = fileService.getFile(user_id);
 
     return ResponseEntity.ok()
         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileEntity.getName() + "\"")

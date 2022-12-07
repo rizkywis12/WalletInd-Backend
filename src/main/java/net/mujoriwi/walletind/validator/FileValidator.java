@@ -19,4 +19,10 @@ public class FileValidator {
             throw new CustomNotFoundException("Biodata Not Found, Please Add Bio First!");
         }
     }
+
+    public void validateNull( String fileName ) throws Exception {
+        if(fileName == null || fileName == " " || fileName == "undifined"){
+            throw new CustomNotFoundException("Please Input Image before submit");
+        }
+    }
 }

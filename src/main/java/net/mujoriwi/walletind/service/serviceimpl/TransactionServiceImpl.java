@@ -157,8 +157,6 @@ public class TransactionServiceImpl implements TransactionService {
 
         transactionValidator.validatePin(pin.getPin(), request.getPin());
 
-        transactionValidator.validateStatus(request.getStatus());
-
         String str = request.getDate();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime dateTime = LocalDateTime.parse(str, formatter);

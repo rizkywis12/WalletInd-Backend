@@ -20,7 +20,5 @@ public class TransferDto {
 
     private String pin;
 
-    private String status;
-
     private String date;
 }

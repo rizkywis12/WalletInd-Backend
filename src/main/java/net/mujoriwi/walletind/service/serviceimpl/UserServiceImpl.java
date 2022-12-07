@@ -7,7 +7,10 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 12c5d090b48455b9c9e3d06a54ab85c79ce896f0
 import net.mujoriwi.walletind.model.dto.request.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,13 +43,12 @@ import net.mujoriwi.walletind.validator.UserValidator;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-
     @Autowired
     private DetailUserRepository detailUserRepository;
     @Autowired
     private UserRoleRepository userRoleRepository;
     @Autowired
-    private RoleRepository  roleRepository;
+    private RoleRepository roleRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -70,6 +72,7 @@ public class UserServiceImpl implements UserService {
     JavaMailSender javaMailSender;
     private Map<Object, Object> data;
 
+<<<<<<< HEAD
     void userInformation() {
         data = new HashMap<>();
         data.put("id", user.getId());
@@ -78,6 +81,8 @@ public class UserServiceImpl implements UserService {
         data.put("balance", user.getBalance());
     }
 
+=======
+>>>>>>> 12c5d090b48455b9c9e3d06a54ab85c79ce896f0
     @Override
     public ResponseData<Object> register(RegisterDto request) throws Exception {
         Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
@@ -134,7 +139,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseData<Object> forgotPassword(String Email,ForgotPasswordDto request) throws Exception {
+    public ResponseData<Object> forgotPassword(String Email, ForgotPasswordDto request) throws Exception {
         Optional<User> userOpt = userRepository.findByEmail(Email);
 
         userValidator.validateUserNotFound(userOpt);
@@ -162,7 +167,6 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(request.getNewPassword());
 
-
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Successfully Change your password!", data);
 
         return responseData;
@@ -186,6 +190,7 @@ public class UserServiceImpl implements UserService {
 
         return responseData;
     }
+
     @Override
     public ResponseData<Object> verficationEmail(EmailRequest email) throws Exception {
         user = userRepository.findByEmail(email.getEmail()).get();
@@ -194,8 +199,7 @@ public class UserServiceImpl implements UserService {
         message.setSubject("Forgot Password");
         message.setText("Here Is Link Reset Password: http://localhost:3000/confirm/" + email.getEmail());
         javaMailSender.send(message);
-        userInformation();
-        responseData = new ResponseData<Object>(200, "sent",data);
+        responseData = new ResponseData<Object>(200, "sent", data);
         return responseData;
     }
 }
