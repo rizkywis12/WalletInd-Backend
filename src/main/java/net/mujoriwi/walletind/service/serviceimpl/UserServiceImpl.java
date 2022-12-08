@@ -5,13 +5,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.mail.internet.InternetAddress;
 import javax.transaction.Transactional;
 
 
 import net.mujoriwi.walletind.model.dto.request.*;
+import net.mujoriwi.walletind.service.mail.EmailTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.SimpleMailMessage;
+
 import org.springframework.mail.javamail.JavaMailSender;
 
 import net.mujoriwi.walletind.config.jwt.JwtUtil;
@@ -20,8 +22,8 @@ import net.mujoriwi.walletind.model.entity.*;
 import net.mujoriwi.walletind.repository.DetailUserRepository;
 import net.mujoriwi.walletind.repository.RoleRepository;
 import net.mujoriwi.walletind.repository.UserRoleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -56,6 +58,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private JwtUtil jwtUtil;
+    @Autowired
+    public EmailTemplate emailTemplate;
+
 
     private ResponseData<Object> responseData;
     private User user;
@@ -68,6 +73,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     JavaMailSender javaMailSender;
     private Map<Object, Object> data;
+//    jangan di delete donk wkwk
+
 
     @Override
     public ResponseData<Object> register(RegisterDto request) throws Exception {
@@ -190,11 +197,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseData<Object> verficationEmail(EmailRequest email) throws Exception {
         user = userRepository.findByEmail(email.getEmail()).get();
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email.getEmail());
-        message.setSubject("Forgot Password");
-        message.setText("Here Is Link Reset Password: http://localhost:3000/confirm/" + email.getEmail());
-        javaMailSender.send(message);
+        javax.mail.internet.MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        String template = emailTemplate.getForgotPasswordTemplate();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
+        helper.setFrom(new InternetAddress("admin@walletIND", "admin@walletIND"));
+        helper.setSubject("Haii You! " + user.getUserName());
+        template = template.replaceAll("\\{\\{Email}}", (user.getEmail()));
+        helper.setText(template, true);
+        helper.setTo(user.getEmail());
+        javaMailSender.send(mimeMessage);
         responseData = new ResponseData<Object>(200, "sent", data);
         return responseData;
     }
