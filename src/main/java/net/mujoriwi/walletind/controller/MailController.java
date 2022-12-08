@@ -1,5 +1,6 @@
 package net.mujoriwi.walletind.controller;
 
+import net.mujoriwi.walletind.model.entity.User;
 import net.mujoriwi.walletind.service.mail.MailService;
 import net.mujoriwi.walletind.model.dto.request.MailDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.mail.MessagingException;
+
 @RestController
 @RequestMapping("/mail")
 public class MailController {
@@ -16,8 +19,8 @@ public class MailController {
     private MailService mailService;
 
     @PostMapping
-    public ResponseEntity<Object> sendMail(@RequestBody MailDto request) {
-        mailService.sendMail(request);
-        return ResponseEntity.ok().body("Email sent successfully!");
+    public String sendMail(@RequestBody User user)throws MessagingException {
+        mailService.sendMail(user);
+        return "Email Sent Successfully.!";
     }
 }

@@ -11,4 +11,5 @@ public class MailDto {
     private String recipient;
     private String subject;
     private String message;
+    private String properties;
 }
