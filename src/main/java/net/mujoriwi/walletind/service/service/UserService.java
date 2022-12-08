@@ -10,7 +10,7 @@ public interface UserService {
 
     ResponseData<Object> forgotPassword(String Email,ForgotPasswordDto request) throws Exception;
 
-    ResponseData<Object> changePassword(long id, ChangePasswordDto request) throws Exception;
+    ResponseData<Object> changePassword(long id, ChangePasswordDto request, LoginDto req) throws Exception;
 
     ResponseData<Object> getAll(long id);
 

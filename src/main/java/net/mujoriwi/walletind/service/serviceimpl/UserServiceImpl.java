@@ -161,6 +161,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ResponseData<Object> changePassword(long id, ChangePasswordDto request, LoginDto req) throws Exception {
+        return null;
+    }
+
+    @Override
     public ResponseData<Object> changePassword(long id, ChangePasswordDto request) throws Exception {
         Optional<User> userOpt = userRepository.findById(id);
         userValidator.validateUserNotFound(userOpt);
