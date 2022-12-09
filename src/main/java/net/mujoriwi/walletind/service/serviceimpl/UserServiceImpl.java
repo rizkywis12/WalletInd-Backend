@@ -199,7 +199,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseData<Object> verficationEmail(EmailRequest email) throws Exception {
-        user = userRepository.findByEmail(email.getEmail()).get();
+        Optional<User> userOpt = userRepository.findByEmail(email.getEmail());
+        userValidator.validateUserNotFound(userOpt);
+        user = userOpt.get();
         javax.mail.internet.MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         String template = emailTemplate.getForgotPasswordTemplate();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
@@ -210,6 +212,7 @@ public class UserServiceImpl implements UserService {
         helper.setTo(user.getEmail());
         javaMailSender.send(mimeMessage);
         responseData = new ResponseData<Object>(200, "sent", data);
+
         return responseData;
     }
 }
