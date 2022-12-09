@@ -5,5 +5,6 @@ import net.mujoriwi.walletind.model.dto.response.ResponseData;
 
 public interface PinService {
     ResponseData<Object> addpin(long id,PinDto request) throws Exception;
+    ResponseData<Object> updatePin(long id,PinDto request) throws Exception;
 }
 
