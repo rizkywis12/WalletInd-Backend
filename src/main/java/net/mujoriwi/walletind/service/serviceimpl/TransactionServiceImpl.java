@@ -25,8 +25,9 @@ import net.mujoriwi.walletind.model.dto.response.ResponseData;
 
 import net.mujoriwi.walletind.model.entity.Transaction;
 import net.mujoriwi.walletind.model.entity.User;
-
+import net.mujoriwi.walletind.model.entity.FileEntity;
 import net.mujoriwi.walletind.model.entity.Pin;
+import net.mujoriwi.walletind.repository.FileRepository;
 import net.mujoriwi.walletind.repository.PinRepository;
 
 import net.mujoriwi.walletind.repository.TransactionRepository;
@@ -51,6 +52,9 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Autowired
     private PinRepository pinRepository;
+
+    @Autowired
+    private FileRepository fileRepository;
 
     private User sender;
     private User receiver;
@@ -99,22 +103,34 @@ public class TransactionServiceImpl implements TransactionService {
         } else {
             data.put("sender", transaction.getSenderId().getUserName());
 
-            String fileSenderUri = ServletUriComponentsBuilder
-                    .fromCurrentContextPath()
-                    .path("/files/")
-                    .path(Long.toString(transaction.getSenderId().getId()))
-                    .toUriString();
+            String fileSenderUri;
+            Optional<FileEntity> fileUserOpt = fileRepository.findUserId(transaction.getSenderId().getId());
+            if (fileUserOpt.isPresent()) {
+                fileSenderUri = ServletUriComponentsBuilder
+                        .fromCurrentContextPath()
+                        .path("/files/")
+                        .path(Long.toString(transaction.getSenderId().getId()))
+                        .toUriString();
+            } else {
+                fileSenderUri = null;
+            }
 
             data.put("senderImage", fileSenderUri);
         }
 
         data.put("receiver", transaction.getReceiverId().getUserName());
 
-        String fileReceiverUri = ServletUriComponentsBuilder
-                .fromCurrentContextPath()
-                .path("/files/")
-                .path(Long.toString(transaction.getReceiverId().getId()))
-                .toUriString();
+        String fileReceiverUri;
+        Optional<FileEntity> fileUserOpt = fileRepository.findUserId(transaction.getReceiverId().getId());
+        if (fileUserOpt.isPresent()) {
+            fileReceiverUri = ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/files/")
+                    .path(Long.toString(transaction.getReceiverId().getId()))
+                    .toUriString();
+        } else {
+            fileReceiverUri = null;
+        }
 
         data.put("receiverImage", fileReceiverUri);
 
