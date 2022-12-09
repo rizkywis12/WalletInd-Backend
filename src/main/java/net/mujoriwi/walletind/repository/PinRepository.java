@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface PinRepository extends JpaRepository<Pin, Long> {
     Optional<Pin> findByUserId(User user);
 
+
 }

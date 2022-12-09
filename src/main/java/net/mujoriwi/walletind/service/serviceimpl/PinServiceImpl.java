@@ -3,6 +3,7 @@ package net.mujoriwi.walletind.service.serviceimpl;
 
 import net.mujoriwi.walletind.model.dto.request.PinDto;
 import net.mujoriwi.walletind.model.dto.response.ResponseData;
+import net.mujoriwi.walletind.model.entity.DetailUser;
 import net.mujoriwi.walletind.model.entity.Pin;
 import net.mujoriwi.walletind.model.entity.User;
 import net.mujoriwi.walletind.repository.PinRepository;
@@ -55,6 +56,23 @@ public class PinServiceImpl implements PinService {
         Optional<Pin> pinOpt = pinRepository.findByUserId(user);
         pinValidator.validatePinExist(pinOpt);
         pin = new Pin(request.getPin());
+        pin.setUserId(user);
+        pin.setPin(request.getPin());
+        pinRepository.save(pin);
+        PinInformation();
+
+        responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Create Pin Succes", data);
+
+        return responseData;
+    }
+    @Override
+    public ResponseData<Object> updatePin(long id, PinDto request) throws Exception {
+        Optional<User> userOpt = userRepository.findById(id);
+        userValidator.validateUserNotFound(userOpt);
+        user = userOpt.get();
+        Optional<Pin> pinOptional = pinRepository.findByUserId(user);
+        pin = pinOptional.get();
+        user = userOpt.get();
         pin.setUserId(user);
         pin.setPin(request.getPin());
         pinRepository.save(pin);
