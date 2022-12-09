@@ -14,8 +14,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import net.mujoriwi.walletind.model.dto.request.DetailUserDto;
 import net.mujoriwi.walletind.model.dto.response.ResponseData;
 import net.mujoriwi.walletind.model.entity.DetailUser;
+import net.mujoriwi.walletind.model.entity.FileEntity;
 import net.mujoriwi.walletind.model.entity.User;
 import net.mujoriwi.walletind.repository.DetailUserRepository;
+import net.mujoriwi.walletind.repository.FileRepository;
 import net.mujoriwi.walletind.repository.UserRepository;
 import net.mujoriwi.walletind.service.service.DetailUserService;
 import net.mujoriwi.walletind.validator.DetailUserValidator;
@@ -30,6 +32,8 @@ public class DetailUserServiceImpl implements DetailUserService {
     private DetailUserRepository detailUserRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private FileRepository fileRepository;
     @Autowired
     private UserValidator userValidator;
 
@@ -121,11 +125,17 @@ public class DetailUserServiceImpl implements DetailUserService {
                 data.put("PhoneNumber", "-");
             }
 
-            String fileReceiverUri = ServletUriComponentsBuilder
-                    .fromCurrentContextPath()
-                    .path("/files/")
-                    .path(Long.toString(user.getId()))
-                    .toUriString();
+            String fileReceiverUri;
+            Optional<FileEntity> fileUserOpt = fileRepository.findUserId(user.getId());
+            if (fileUserOpt.isPresent()) {
+                fileReceiverUri = ServletUriComponentsBuilder
+                        .fromCurrentContextPath()
+                        .path("/files/")
+                        .path(Long.toString(user.getId()))
+                        .toUriString();
+            } else {
+                fileReceiverUri = null;
+            }
 
             data.put("receiverImage", fileReceiverUri);
 
@@ -155,11 +165,17 @@ public class DetailUserServiceImpl implements DetailUserService {
             data.put("PhoneNumber", "-");
         }
 
-        String fileReceiverUri = ServletUriComponentsBuilder
-                .fromCurrentContextPath()
-                .path("/files/")
-                .path(Long.toString(user.getId()))
-                .toUriString();
+        String fileReceiverUri;
+        Optional<FileEntity> fileUserOpt = fileRepository.findUserId(user.getId());
+        if (fileUserOpt.isPresent()) {
+            fileReceiverUri = ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/files/")
+                    .path(Long.toString(user.getId()))
+                    .toUriString();
+        } else {
+            fileReceiverUri = null;
+        }
 
         data.put("receiverImage", fileReceiverUri);
 
