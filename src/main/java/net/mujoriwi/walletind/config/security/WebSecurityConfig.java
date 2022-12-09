@@ -65,6 +65,7 @@ public class WebSecurityConfig {
 
         .antMatchers(HttpMethod.POST, "/users/**", "/top-up/*", "/files/top-up/**", "/users/verif/*", "/users/pin/*").permitAll()
             .antMatchers(HttpMethod.GET, "/files/top-up/*", "/files/*").permitAll()
+            .antMatchers(HttpMethod.PUT, "/users/forgot-password/*").permitAll()
 
         .antMatchers(HttpMethod.POST, "/users/**").permitAll()
 

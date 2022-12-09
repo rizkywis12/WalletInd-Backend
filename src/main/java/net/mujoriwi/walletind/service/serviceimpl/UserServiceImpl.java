@@ -29,6 +29,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.stereotype.Service;
@@ -153,7 +154,7 @@ public class UserServiceImpl implements UserService {
 
         userValidator.validateConfirmPassword(request.getPassword(), request.getConfirmPassword());
 
-        user.setPassword(request.getPassword());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Successfully update your password!", data);
 
@@ -165,10 +166,12 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOpt = userRepository.findById(id);
         userValidator.validateUserNotFound(userOpt);
         user = userOpt.get();
-        userValidator.validateCurrentPassword(user.getPassword(), request.getCurrentPassword());
+        BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
+        boolean passChecker = bc.matches(request.getCurrentPassword(), user.getPassword());
+        userValidator.booleanChecker(passChecker);
         userValidator.validateConfirmPassword(request.getNewPassword(), request.getNewConfirmPassword());
 
-        user.setPassword(request.getNewPassword());
+        user.setPassword(passwordEncoder.encode(request.getNewConfirmPassword()));
 
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Successfully Change your password!", data);
 

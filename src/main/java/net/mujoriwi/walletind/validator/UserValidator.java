@@ -28,6 +28,11 @@ public class UserValidator {
             throw new CustomNotFoundException("Username already exist. Please login!");
         }
     }
+    public void booleanChecker(Boolean passChecker) throws Exception {
+        if (!passChecker) {
+            throw new CustomNotFoundException("Wrong Current Password");
+        }
+    }
 
     public void validatePassword(String passwordDB, String requestDB) throws Exception {
         if (!passwordDB.equals(requestDB)) {
