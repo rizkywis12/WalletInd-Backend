@@ -211,6 +211,11 @@ public class UserServiceImpl implements UserService {
         helper.setText(template, true);
         helper.setTo(user.getEmail());
         javaMailSender.send(mimeMessage);
+        data = new HashMap<>();
+
+        data.put("email", user.getEmail());
+
+
         responseData = new ResponseData<Object>(200, "sent", data);
 
         return responseData;
