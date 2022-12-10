@@ -40,7 +40,7 @@ $ mvn spring-boot:run
 5. Open your postman and create new request. Enter your request URL. You can find the request URL via controller folder. Find the required request body for your request URL via model folder > dto > request. Example:
    You want to register an account. Open the controller folder > UserController.java. The code looks as follows:
 
-````
+```
  @PostMapping("/register")
     public ResponseEntity<Object> register(@RequestBody @Valid RegisterDto request) throws Exception {
         responseData = userService.register(request);
