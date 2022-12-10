@@ -10,34 +10,25 @@ _WalletIND is an online transaction application that is user friendly, can be ac
 
 ### Final Deployment
 
-See [WalletIND](https://wallet-ind.netlify.app/)
+See [WalletIND Frontend](https://wallet-ind.netlify.app/)
 
-### How to run project
+### How to run project?
 
 1. Open your terminal and then type:
 
 ```
 $ git clone {the url to the GitHub repo}
 ```
-
-2. cd into the new folder and run the project:
-
-```
-$ mvn spring-boot:run
-```
-
-### How the project works?
-
-1. Setup your database in resouces > templates > application.properties
-2. Open your XAMPP Control Panel and Start running the Apache and MySQL
-3. Create a database with the name walletind
-4. Run Java Program by opening WalletindApplication.java (@SpringBootApplication) or you can open terminal and type:
+2. Setup your database in resources > templates > application.properties
+3. Open your XAMPP Control Panel and Start running the Apache and MySQL
+4. Create a database with the name walletind
+5. Run Java Program by opening WalletindApplication.java (@SpringBootApplication) and run the program or you can open terminal and type:
 
 ```
 $ mvn spring-boot:run
 ```
 
-5. Open your postman and create new request. Enter your request URL. You can find the request URL via controller folder. Find the required request body for your request URL via model folder > dto > request. Example:
+6. Open your postman and create new request. Enter your request URL. You can find the request URL via controller folder. Find the required request body for your request URL via model folder > dto > request. Example:
    You want to register an account. Open the controller folder > UserController.java. The code looks as follows:
 
 ```
@@ -54,8 +45,12 @@ From RegisterDto, we have to write down our email, password, userName and role (
 
 For more detailed example, open our Postman documentation below!
 
-Walletind Documentation:
+See:
 [Walletind Documentation](https://mvnrepository.com/)
+
+7. Without postman, you can use the frontend that we have created. Access our code:
+[Walletind Frontend](https://github.com/rizkywis12/WalletIND)
+When you run the frontend, make sure your port is match with the backend crossorigin setup (check in the controller folder).
 
 ### Dependency
 
@@ -74,4 +69,3 @@ Find dependency:
 [Maven Repository](https://mvnrepository.com/)
 
 Created by: Mujoriwi Team (Rizky Wisesar, Joenathan Sirait, Muhand Dany, dan Windy Nathalie Ong) (2022)
-````
