@@ -46,7 +46,8 @@ $ mvn spring-boot:run
         responseData = userService.register(request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
-    ```
+```
+
 From the code, we do post mapping (choose post method in your Postman app). After that, we need RegisterDto as request body for register request URL. So, open the model folder > dto > request > RegisterDto.java
 
 From RegisterDto, we have to write down our email, password, userName and role (optionally). In your postman, open Body, choose raw, and JSON. Input your required Dto (email, password, and userName) as your request body in your Postman.
