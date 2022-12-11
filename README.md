@@ -46,7 +46,7 @@ From RegisterDto, we have to write down our email, password, userName and role (
 For more detailed example, open our Postman documentation below!
 
 See:
-[Walletind Documentation](https://documenter.getpostman.com/view/19294716/2s8YsnYwoC)
+[Walletind Documentation](https://documenter.getpostman.com/view/23542662/2s8YzTU2V2)
 
 7. Without postman, you can use the frontend that we have created. Access our code:
 [Walletind Frontend](https://github.com/rizkywis12/WalletIND)
