@@ -77,9 +77,7 @@ public class PinServiceImpl implements PinService {
         pin.setPin(request.getPin());
         pinRepository.save(pin);
         PinInformation();
-
         responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Update Pin Success", data);
-
         return responseData;
     }
 }

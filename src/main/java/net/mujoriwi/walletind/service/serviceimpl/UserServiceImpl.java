@@ -117,6 +117,9 @@ public class UserServiceImpl implements UserService {
     public ResponseData<Object> login(LoginDto request) throws Exception {
 
         Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
+        // Validate user is not found
+        userValidator.validateUserNotFound(userOpt);
+
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 request.getEmail(), request.getPassword());
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
@@ -126,11 +129,10 @@ public class UserServiceImpl implements UserService {
         // generate token
         String jwtToken = jwtUtil.generateJwtToken(authentication);
         UserDetails userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        // Validate user is not found
-        userValidator.validateUserNotFound(userOpt);
 
         // User : Database - Model/Entity/User
         user = userOpt.get();
+
         
         data = new HashMap<>();
         data.put("id", user.getId());
