@@ -30,21 +30,36 @@ public class FileController {
 
   private ResponseData<Object> responseData;
 
-  @PostMapping("/upload/{user_id}")
+   @PostMapping("/upload/{user_id}")
   public ResponseEntity<Object> uploadFile(@Valid @RequestParam("file") MultipartFile file, @PathVariable Long user_id)
       throws IOException, Exception {
-    fileService.store(file, user_id);
-    String message = "Uploaded the file successfully: " + file.getOriginalFilename();
-    responseData = new ResponseData<Object>(200, message, null);
-    return ResponseEntity.ok().body(responseData);
+    long size = file.getSize();
+    if (size > 2097152) // sama dengan 2MB
+    {
+      responseData = new ResponseData<Object>(400, "Image cannot more than 2mb", null);
+      return ResponseEntity.badRequest().body(responseData);
+    } else {
+      fileService.store(file, user_id);
+      String message = "Uploaded the file successfully: " + file.getOriginalFilename();
+      responseData = new ResponseData<Object>(200, message, null);
+      return ResponseEntity.ok().body(responseData);
+    }
   }
 
   @PutMapping("/upload/{user_id}")
-  public ResponseEntity<Object> updateFile(@RequestParam("file") MultipartFile file, @PathVariable Long user_id) throws IOException, Exception {
-    fileService.updateFile(file, user_id);
-    String message = "Updateded the file successfully: " + file.getOriginalFilename();
-    responseData = new ResponseData<Object>(200, message, null);
-    return ResponseEntity.ok().body(responseData);
+  public ResponseEntity<Object> updateFile(@RequestParam("file") MultipartFile file, @PathVariable Long user_id)
+      throws IOException, Exception {
+    long size = file.getSize();
+    if (size > 2097152) // sama dengan 2MB
+    {
+      responseData = new ResponseData<Object>(400, "Image cannot more than 2mb", null);
+      return ResponseEntity.badRequest().body(responseData);
+    } else {
+      fileService.updateFile(file, user_id);
+      String message = "Updateded the file successfully: " + file.getOriginalFilename();
+      responseData = new ResponseData<Object>(200, message, null);
+      return ResponseEntity.ok().body(responseData);
+    }
   }
 
   @GetMapping("/{user_id}")
