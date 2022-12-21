@@ -1,3 +1,4 @@
+
 server.servlet.context-path=/walletind
 server.port = 7032
 

@@ -17,7 +17,7 @@ import net.mujoriwi.walletind.service.service.UserService;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(value = "https://walletind.vercel.app/")
 public class UserController {
 
     @Autowired

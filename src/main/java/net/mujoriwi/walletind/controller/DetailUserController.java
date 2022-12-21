@@ -12,7 +12,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(value = "https://walletind.vercel.app/")
 public class DetailUserController {
     @Autowired
     private DetailUserService detailUserService;
