@@ -2,12 +2,11 @@ server.port = 4000
 server.servlet.context-path=/walletind
 
 #GANTI PORT
-spring.jpa.show-sql=true
-spring.jpa.hibernate.ddl-auto=update
-spring.datasource.url=jdbc:postgresql://${{ PGUSER }}:${{ PGPASSWORD }}@${{ PGHOST }}:${{ PGPORT }}/${{ PGDATABASE }}
-spring.datasource.username=postgres
-spring.datasource.password=zRoKXgHuiYGbxyWLhJTL
-security.jwt.enabled=true
+PROD_DB_HOST=containers-us-west-148.railway.app
+PROD_DB_PORT=7857
+PROD_DB_NAME=railway
+PROD_DB_PASSWORD=zRoKXgHuiYGbxyWLhJTL
+PROD_DB_USERNAME=postgres
 #
 # Setup JPA
 spring.jpa.show-sql=true
