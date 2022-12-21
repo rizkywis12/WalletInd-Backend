@@ -14,7 +14,7 @@ import javax.mail.MessagingException;
 
 @RestController
 @RequestMapping("/mail")
-@CrossOrigin(value = "https://walletind.vercel.app/")
+
 public class MailController {
     @Autowired
     private MailService mailService;

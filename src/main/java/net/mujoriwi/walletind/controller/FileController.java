@@ -23,7 +23,7 @@ import net.mujoriwi.walletind.service.service.FileService;
 
 @RestController
 @RequestMapping("/files")
-@CrossOrigin(value = "https://walletind.vercel.app/")
+
 public class FileController {
   @Autowired
   private FileService fileService;

@@ -20,7 +20,7 @@ import net.mujoriwi.walletind.service.service.FileTopUpService;
 
 @RestController
 @RequestMapping("/files/top-up")
-@CrossOrigin(value = "https://walletind.vercel.app/")
+
 public class FileTopUpController {
 
     @Autowired

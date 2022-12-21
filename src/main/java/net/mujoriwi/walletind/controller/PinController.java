@@ -12,7 +12,6 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(value = "https://walletind.vercel.app/")
 public class PinController {
 
     @Autowired

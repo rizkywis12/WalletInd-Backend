@@ -13,7 +13,7 @@ import net.mujoriwi.walletind.service.service.TopUpService;
 
 @RestController
 @RequestMapping("/top-up")
-@CrossOrigin(value = "https://walletind.vercel.app/")
+
 public class TopUpController {
     @Autowired
     private TopUpService topUpService;
