@@ -19,7 +19,7 @@ import net.mujoriwi.walletind.service.service.TransactionService;
 
 @RestController
 @RequestMapping("/transactions")
-@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(value = "https://walletind.vercel.app/")
 public class TransactionController {
     @Autowired
     private TransactionService transactionService;
